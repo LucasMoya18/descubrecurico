@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Confirmar eliminación{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto my-12 px-4">
+  <div class="bg-red-50 border-2 border-red-300 rounded-lg p-8">
+    <h1 class="text-3xl font-bold text-red-600 mb-4">⚠️ Confirmar eliminación</h1>
+    
+    <div class="bg-white p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-bold text-slate-800 mb-2">{{ objeto.titulo }}</h2>
+      <p class="text-slate-600">{{ objeto.resumen }}</p>
+      <p class="text-sm text-slate-500 mt-4">Tipo: <strong>{{ tipo }}</strong></p>
+    </div>
+
+    <p class="text-red-700 font-semibold mb-6">
+      ¿Estás seguro de que deseas eliminar este {{ tipo|lower }}? Esta acción no se puede deshacer.
+    </p>
+
+    <div class="flex gap-4">
+      <form method="post" class="flex-1">
+        {% csrf_token %}
+        <button type="submit" class="w-full px-6 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition">
+          ✓ Eliminar definitivamente
+        </button>
+      </form>
+      <a href="{% url 'appadmincontenido:articulos' %}" class="flex-1 px-6 py-3 bg-slate-400 text-white rounded-lg font-bold text-center hover:bg-slate-500 transition">
+        ✕ Cancelar
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

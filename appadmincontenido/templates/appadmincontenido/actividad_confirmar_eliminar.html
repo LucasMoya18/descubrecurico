@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-12 bg-gray-50">
+  <div class="container mx-auto px-4 max-w-2xl">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h1 class="text-3xl font-bold text-red-600 mb-6">Confirmar Eliminación</h1>
+      
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+        <p class="text-yellow-800">
+          ¿Estás seguro de que deseas eliminar la actividad <strong>"{{ actividad.titulo }}"</strong>?
+        </p>
+        <p class="text-yellow-700 text-sm mt-2">Esta acción no se puede deshacer.</p>
+      </div>
+
+      <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h3 class="font-bold text-gray-800 mb-2">{{ actividad.titulo }}</h3>
+        <p class="text-gray-600 mb-2">{{ actividad.descripcion|truncatewords:30 }}</p>
+        <p class="text-sm text-gray-500">
+          <strong>Lugar:</strong> {{ actividad.lugar }}<br>
+          <strong>Inicio:</strong> {{ actividad.fecha_inicio|date:"d/m/Y H:i" }}<br>
+          <strong>Término:</strong> {{ actividad.fecha_termino|date:"d/m/Y H:i" }}
+        </p>
+      </div>
+
+      <form method="post" class="flex gap-4">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium">
+          Sí, eliminar
+        </button>
+        <a href="{% url 'appadmincontenido:eventos' %}" class="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition-colors font-medium">
+          Cancelar
+        </a>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

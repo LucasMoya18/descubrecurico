@@ -1,0 +1,61 @@
+{% load static %}
+
+<header class="bg-burgundy-reserve text-white shadow-lg">
+  <div class="container mx-auto px-4 py-6">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <div class="relative flex items-center gap-3">
+          <!-- Fondo degradado blanco detrás del logo -->
+          <div class="absolute inset-0 w-[255px] h-[100px] rounded-2xl bg-gradient-to-br from-white via-white/90 to-white/60 blur-lg opacity-90"></div>
+
+          <!-- Logo con enlace -->
+          <a href="{% url 'home' %}" class="relative z-10">
+            <img
+              src="{% static 'imagenes/curico-logo.png' %}"
+              alt="Descubre Curicó - Tierra de Vinos y Experiencias"
+              class="h-24 w-auto drop-shadow-lg"
+            >
+          </a>
+
+          <!-- Texto lateral -->
+          <div class="relative border-l border-white/30 pl-3 hidden sm:block z-10">
+            <h1 class="text-lg font-bold tracking-tight">
+              {% block header_title %}Directorio de Socios{% endblock %}
+            </h1>
+            <p class="text-white/90 text-xs">
+              {% block header_subtitle %}Descubre Empresas y Servicios locales del Valle{% endblock %}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAV -->
+      <nav class="hidden md:flex items-center gap-6">
+        <a href="{% url 'home' %}" 
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'inicio' %}text-harvest-gold{% endif %}">
+          Inicio
+        </a>
+        <a href="{% url 'appadmincontenido:articulos' %}" 
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'articulos' %}text-harvest-gold{% endif %}">
+          Artículos y noticias
+        </a>
+        <a href="{% url 'appadmincontenido:eventos' %}" 
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'eventos' %}text-harvest-gold{% endif %}">
+          Próximos eventos
+        </a>
+        <a href="{% url 'appsocios:lista_empresas' %}" 
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'empresas' %}text-harvest-gold{% endif %}">
+          Socios
+        </a>
+        <a href="{% url 'contacto' %}" 
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'contacto' %}text-harvest-gold{% endif %}">
+          Contacto
+        </a>
+        <a href="{% url 'applogin:login' %}" 
+          class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+          Iniciar Sesión
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>

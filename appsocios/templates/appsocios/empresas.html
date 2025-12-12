@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Directorio de Empresas - Descubre Curicó{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <a href="{% url 'appsocios:crear_socio' %}" 
+      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+      Crear Socio
+    </a>
+
+    <a href="{% url 'appsocios:crear_empresa' %}" 
+      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+      Crear Empresa
+    </a>
+    
+    <a href="{% url 'appsocios:crear_rubro' %}" 
+      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+      Crear Rubro
+    </a>
+
+    <a href="{% url 'appsocios:crear_tipo_comercializacion' %}" 
+      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+      Crear Tipo de Comercialización
+    </a>
+    
+    <!-- Search and Filters -->
+    <div class="mb-8">
+        <div class="relative mb-4">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
+            <input type="text" 
+                   id="searchInput" 
+                   placeholder="Buscar negocios o servicios" 
+                   class="pl-10 w-full h-11 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-vine-green">
+        </div>
+        
+        <div class="flex flex-wrap gap-2" id="categoryFilters">
+            <button class="category-btn active px-4 py-2 rounded-lg font-medium transition-colors bg-harvest-gold text-burgundy-reserve" 
+                    data-category="Todas">
+                Todas
+            </button>
+            <button class="category-btn px-4 py-2 rounded-lg font-medium transition-colors bg-white text-burgundy-reserve border border-vine-green/40 hover:bg-white/90" 
+                    data-category="Alojamiento">
+                Alojamiento
+            </button>
+            <button class="category-btn px-4 py-2 rounded-lg font-medium transition-colors bg-white text-burgundy-reserve border border-vine-green/40 hover:bg-white/90" 
+                    data-category="Venta de productos">
+                Venta de productos
+            </button>
+            <button class="category-btn px-4 py-2 rounded-lg font-medium transition-colors bg-white text-burgundy-reserve border border-vine-green/40 hover:bg-white/90" 
+                    data-category="Servicios">
+                Servicios
+            </button>
+        </div>
+    </div>
+    
+    <!-- View Toggle -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <p class="text-sm text-gray-600">Resultados encontrados</p>
+            <p class="text-2xl font-bold text-burgundy-reserve" id="resultsCount">0</p>
+        </div>
+        <div class="flex gap-2">
+            <button id="gridViewBtn" class="p-2 rounded-lg bg-white text-burgundy-reserve hover:bg-white/90">
+                <i data-lucide="grid-3x3" class="h-5 w-5"></i>
+            </button>
+            <button id="mapViewBtn" class="p-2 rounded-lg text-white hover:bg-white/10">
+                <i data-lucide="map" class="h-5 w-5"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Grid View -->
+    <div id="gridView" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Business cards will be inserted here by JavaScript -->
+    </div>
+    
+    <!-- Map View -->
+    <div id="mapView" class="hidden">
+        <div class="bg-white rounded-lg p-8 text-center">
+            <i data-lucide="map-pin" class="h-16 w-16 mx-auto mb-4 text-burgundy-reserve"></i>
+            <h3 class="text-xl font-bold text-burgundy-reserve mb-2">Mapa Interactivo</h3>
+            <p class="text-gray-600">El mapa interactivo se integrará con la API de mapas de tu elección</p>
+        </div>
+    </div>
+    
+    <!-- No Results -->
+    <div id="noResults" class="hidden text-center py-16">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-200 mb-4">
+            <i data-lucide="search" class="h-8 w-8 text-gray-500"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">No se encontraron resultados</h3>
+        <p class="text-gray-600">Intenta con otros términos de búsqueda o categorías</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/empresas.js' %}"></script>
+{% endblock %}

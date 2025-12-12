@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Socio - Descubre Curicó{% endblock %}
+
+{% block content %}
+<!-- Incluir CSS personalizado -->
+<link rel="stylesheet" href="{% static 'css/crear_socio.css' %}">
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-burgundy-reserve to-grape-purple text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Registar Nuevo Socio</h1>
+        <p class="text-xl text-white/90 max-w-2xl mx-auto">
+            Registrar un nuevo socio en el gremio llenando el formulario a continuación.
+        </p>
+    </div>
+</section>
+
+<!-- Formulario -->
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="p-8 bg-white border-2 border-barrel-brown/20 rounded-lg">
+            
+            <!-- Mensajes de error/éxito -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-error{% else %}alert-success{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Información Personal -->
+                <div class="form-section">
+                    <h2>Información Personal</h2>
+                    
+                    <!-- RUT -->
+                    <div>
+                        <label for="{{ form.socio_rut.id_for_label }}">
+                            RUT *
+                        </label>
+                        {{ form.socio_rut }}
+                        {% if form.socio_rut.errors %}
+                            <span class="error-message">{{ form.socio_rut.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Nombre y Apellidos -->
+                    <div class="form-row three-cols">
+                        <div>
+                            <label for="{{ form.socio_nombre.id_for_label }}">
+                                Nombre *
+                            </label>
+                            {{ form.socio_nombre }}
+                            {% if form.socio_nombre.errors %}
+                                <span class="error-message">{{ form.socio_nombre.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.socio_apellido_paterno.id_for_label }}">
+                                Apellido Paterno *
+                            </label>
+                            {{ form.socio_apellido_paterno }}
+                            {% if form.socio_apellido_paterno.errors %}
+                                <span class="error-message">{{ form.socio_apellido_paterno.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.socio_apellido_materno.id_for_label }}">
+                                Apellido Materno
+                            </label>
+                            {{ form.socio_apellido_materno }}
+                            {% if form.socio_apellido_materno.errors %}
+                                <span class="error-message">{{ form.socio_apellido_materno.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="form-section">
+                    <h2>Información de Contacto</h2>
+                    
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="{{ form.socio_celular.id_for_label }}">
+                                Celular *
+                            </label>
+                            {{ form.socio_celular }}
+                            {% if form.socio_celular.errors %}
+                                <span class="error-message">{{ form.socio_celular.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.socio_fijo.id_for_label }}">
+                                Teléfono Fijo
+                            </label>
+                            {{ form.socio_fijo }}
+                            {% if form.socio_fijo.errors %}
+                                <span class="error-message">{{ form.socio_fijo.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.socio_correo.id_for_label }}">
+                            Email *
+                        </label>
+                        {{ form.socio_correo }}
+                        {% if form.socio_correo.errors %}
+                            <span class="error-message">{{ form.socio_correo.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    
+                </div>
+
+                <!-- Información de Dirección -->
+                <div class="form-section">
+                    <h2>Información de Dirección</h2>
+                    
+                    <div>
+                        <label for="{{ form.socio_direccion.id_for_label }}">
+                            Dirección *
+                        </label>
+                        {{ form.socio_direccion }}
+                        {% if form.socio_direccion.errors %}
+                            <span class="error-message">{{ form.socio_direccion.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="{{ form.socio_numero.id_for_label }}">
+                                Número *
+                            </label>
+                            {{ form.socio_numero }}
+                            {% if form.socio_numero.errors %}
+                                <span class="error-message">{{ form.socio_numero.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.socio_region.id_for_label }}">
+                                Región *
+                            </label>
+                            <select id="id_socio_region" name="socio_region" required>
+                                <option value="">-- Selecciona una región --</option>
+                                {% for region in form.socio_region.field.queryset %}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.socio_region.errors %}
+                                <span class="error-message">{{ form.socio_region.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.socio_comuna.id_for_label }}">
+                            Comuna *
+                        </label>
+                        <select id="id_socio_comuna" name="socio_comuna" required>
+                            <option value="">-- Selecciona una comuna --</option>
+                            {% for comuna in form.socio_comuna.field.queryset %}
+                                <option value="{{ comuna.id }}" data-region-id="{{ comuna.provincia.region.id }}">
+                                    {{ comuna.comuna }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.socio_comuna.errors %}
+                            <span class="error-message">{{ form.socio_comuna.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="btn-container">
+                    <button type="submit" class="btn-primary">
+                        <i data-lucide="check-circle"></i>
+                        Registrar Socio
+                    </button>
+                    <a href="{% url 'appsocios:lista_empresas' %}" class="btn-secondary">
+                        <i data-lucide="x-circle"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/crear_socio.js' %}"></script>
+{% endblock %}

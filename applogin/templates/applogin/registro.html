@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registro - Descubre Curicó{% endblock %}
+
+{% block content %}
+    <h2>Registro de Usuario</h2>
+  <form action="" method="post">
+    {% csrf_token %}
+  <!-- formulario por defecto  {{ form.as_p }} -->
+   <!-- formulario personalizado -->
+   <table>
+     <tr>
+      <td><label for="username">Nombre de usuario:</label></td>
+      <td><input type="text" name="username" id="username" required><br></td>
+     </tr>
+     <tr>
+      <td><label for="password1">Contraseña:</label></td>
+      <td><input type="password" name="password1" id="password1" required><br></td>
+     </tr>
+     <tr>
+      <td><label for="password1">Confirme Contraseña:</label></td>
+      <td><input type="password" name="password2" id="password2" required><br></td>
+     </tr>
+     <tr>
+      <td><button type="submit">Registrarse</button></td>
+      <td></td>
+     </tr>
+   </table>      
+    {% if mensaje %}     
+      <h3>{{ mensaje }}</h3>
+    {% endif %}
+  </form>
+  <a href="{% url 'applogin:login' %}">Login</a>
+
+{% endblock %}

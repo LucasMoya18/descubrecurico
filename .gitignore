@@ -1,0 +1,4 @@
+# .gitignore
+.env
+descubrecurico/settings.py
+media/articulos/

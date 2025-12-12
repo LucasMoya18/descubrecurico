@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{{ articulo.titulo }} - Descubre Curicó{% endblock %}
+
+{% block content %}
+{% if articulo.estado == 'DRAFT' %}
+  <section class="bg-yellow-50 border-b-4 border-yellow-400 py-4">
+    <div class="max-w-4xl mx-auto px-4 text-center flex items-center justify-center gap-3">
+      <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <p class="text-yellow-800 font-semibold text-lg">Este contenido es un BORRADOR y no está publicado.</p>
+    </div>
+  </section>
+{% endif %}
+
+<section class="bg-white border-b border-gray-200 py-10">
+  <div class="max-w-4xl mx-auto px-4">
+    <h1 class="text-4xl font-extrabold text-vine mb-3">{{ articulo.titulo }}</h1>
+    <p class="text-slate-700">
+      {{ articulo.publicado_en|date:"M d, Y" }} — {{ articulo.autor }} ·
+      {% for c in articulo.categorias.all %}
+        <span class="inline-block bg-vine/10 text-vine px-2 py-0.5 rounded">{{ c.nombre }}</span>
+      {% empty %}<span class="text-slate-400">Sin categoría</span>{% endfor %}
+    </p>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto px-4 py-8">
+  {% if articulo.portada %}
+    <figure class="mb-8">
+      <img src="{{ articulo.portada.url }}" alt="{{ articulo.titulo }}" class="w-full aspect-video object-cover rounded-2xl shadow-lg border border-gray-200">
+    </figure>
+  {% endif %}
+
+  {% if articulo.resumen %}
+    <p class="text-xl text-slate-700 leading-relaxed mb-8">{{ articulo.resumen }}</p>
+  {% endif %}
+
+  <div class="prose prose-lg max-w-none">
+    {% for b in articulo.bloques.all %}
+      {% if b.tipo == "SUBTITLE" and b.subtitulo %}
+        <h3 class="text-vine">{{ b.subtitulo }}</h3>
+      {% elif b.tipo == "TEXT" and b.texto %}
+        <p class="text-slate-800">{{ b.texto|linebreaksbr }}</p>
+      {% elif b.tipo == "IMAGE" and b.imagen %}
+        <figure class="my-6 {% if b.estilo_imagen == 'wide' %}-mx-4 sm:mx-0 sm:rounded-2xl overflow-hidden{% endif %}">
+          <img src="{{ b.imagen.url }}"
+               alt="{{ b.pie_de_foto|default:articulo.titulo }}"
+               class="w-full object-cover {% if b.estilo_imagen == 'rounded' %}rounded-2xl{% endif %} {% if b.estilo_imagen == 'shadow' %}shadow-xl{% endif %}">
+          {% if b.pie_de_foto %}
+            <figcaption class="text-center text-sm text-slate-500 mt-2">{{ b.pie_de_foto }}</figcaption>
+          {% endif %}
+        </figure>
+      {% elif b.tipo == "URL" and b.url %}
+        <p><a href="{{ b.url }}" class="text-hot-magenta hover:underline" rel="noopener" target="_blank">{{ b.url }}</a></p>
+      {% elif b.tipo == "YOUTUBE" and b.url and b.youtube_embed_src %}
+        <div class="aspect-video my-6 rounded-xl overflow-hidden shadow-lg">
+          <iframe src="{{ b.youtube_embed_src }}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+        </div>
+      {% elif b.tipo == "VIDEO" and b.url %}
+        <video class="w-full my-6 rounded-xl shadow-lg" controls src="{{ b.url }}"></video>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <hr class="border-vine/20 my-6">
+
+  <h4 class="text-xl font-bold text-vine mb-3">Comentarios</h4>
+  <div class="space-y-3">
+    {% for c in articulo.comentarios.all %}
+      <div class="bg-gray-50 rounded-lg p-3 border border-gray-200 text-slate-800">
+        <p class="text-sm"><strong>{{ c.nombre }}</strong> — <span class="text-slate-500">{{ c.email }}</span></p>
+        <p class="mt-1">{{ c.texto }}</p>
+      </div>
+    {% empty %}
+      <p class="text-sm text-slate-600">Aún no hay comentarios. ¡Sé el primero!</p>
+    {% endfor %}
+  </div>
+
+  <form method="post" class="mt-6 space-y-3">
+    {% csrf_token %}
+    <div class="grid md:grid-cols-2 gap-3">
+      {{ form.nombre.errors }}{{ form.nombre }}
+      {{ form.email.errors }}{{ form.email }}
+    </div>
+    {{ form.texto.errors }}{{ form.texto }}
+    <button type="submit" class="px-6 py-3 rounded-xl text-white font-semibold shadow-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 ring-pink-500 hover:scale-[1.02] active:scale-[0.99] bg-gradient-to-r from-pink-600 to-purple-600">Enviar comentario</button>
+  </form>
+</div>
+{% endblock %}

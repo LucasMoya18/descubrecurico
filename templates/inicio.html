@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - Descubre Curicó{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="relative bg-burgundy-reserve text-white pt-[100px] pb-24">
+  <div class="container mx-auto px-6 lg:px-10">
+    <div class="flex flex-col md:flex-row items-center md:items-start gap-10">
+      
+      <!-- Texto -->
+      <div class="md:w-1/2 text-center md:text-left">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Impulsa tu negocio en Curicó</h1>
+        <p class="text-lg md:text-xl text-white/90 mb-8">
+          Únete al gremio de empresas y emprendedores que trabajan juntos para fortalecer el turismo, el comercio y la economía local de Curicó. Formar parte de nuestra comunidad significa colaborar con más de 130 empresas, compartir experiencias, aprender a través de capacitaciones y mentorías, y participar activamente en ferias y proyectos que impulsan el desarrollo de nuestra región. Juntos construimos un entorno donde los negocios crecen, la innovación se fomenta y cada emprendedor tiene la oportunidad de dejar su huella en la provincia del Maule.
+        </p>
+        <a href="{% url 'contacto' %}" class="inline-block bg-harvest-gold text-burgundy-reserve font-semibold px-8 py-3 rounded-full hover:bg-vine-green hover:text-white transition">
+          ¡Únete al Gremio!
+        </a>
+      </div>
+
+      <!-- Imágenes -->
+      <div class="md:w-1/2 flex flex-col gap-6 items-center">
+        <img src="{% static 'imagenes/teamwork.png' %}" alt="Trabajo en equipo" class="w-3/4 md:w-full rounded-lg shadow-lg">
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- BENEFICIOS -->
+<section class="py-20 bg-vineyard-beige text-slate-gray">
+  <div class="container mx-auto px-6 lg:px-10">
+    <h2 class="text-3xl font-bold text-burgundy-reserve text-center mb-12">Ventajas de ser parte del gremio</h2>
+
+    <div class="grid md:grid-cols-3 gap-10">
+      <!-- Red de colaboración -->
+      <div class="bg-[var(--pure-white)] p-8 rounded-3xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+        <i data-lucide="users" class="h-12 w-12 text-vine-green mb-4"></i>
+        <h3 class="text-xl font-semibold mb-3 text-burgundy-reserve">Red de colaboración</h3>
+        <p class="text-sm text-[var(--storm-gray)]">
+          Conecta con más de 130 empresas familiares y emprendedores de Curicó y la región del Maule. Nuestro gremio fomenta el intercambio de experiencias, conocimientos y buenas prácticas, brindando oportunidades de colaboración, alianzas estratégicas y apoyo mutuo que fortalecen tu negocio y la economía local.
+        </p>
+      </div>
+
+      <!-- Capacitación continua -->
+      <div class="bg-[var(--pure-white)] p-8 rounded-3xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+        <i data-lucide="book-open" class="h-12 w-12 text-vine-green mb-4"></i>
+        <h3 class="text-xl font-semibold mb-3 text-burgundy-reserve">Capacitación continua</h3>
+        <p class="text-sm text-[var(--storm-gray)]">
+          Participa en mentorías, talleres y capacitaciones diseñadas para potenciar tus habilidades empresariales y el desarrollo de tu negocio. Desde gestión financiera, marketing digital y atención al cliente, hasta innovación y sostenibilidad, cada actividad está pensada para que los emprendedores crezcan profesionalmente y mantengan su competitividad.
+        </p>
+      </div>
+
+      <!-- Participación activa -->
+      <div class="bg-[var(--pure-white)] p-8 rounded-3xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+        <i data-lucide="map-pin" class="h-12 w-12 text-vine-green mb-4"></i>
+        <h3 class="text-xl font-semibold mb-3 text-burgundy-reserve">Participación activa</h3>
+        <p class="text-sm text-[var(--storm-gray)]">
+          Forma parte de ferias, encuentros empresariales y proyectos comunitarios que aumentan la visibilidad de tu empresa y permiten interactuar directamente con clientes, proveedores y aliados estratégicos. Esta participación fortalece tu marca y conecta con la comunidad local, promoviendo el turismo, el comercio y el desarrollo económico de Curicó.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Incluir el JS que maneja los artículos -->
+<script src="{% static 'js/articulos.js' %}"></script>
+
+<!-- SECCIÓN DE ARTÍCULOS DESTACADOS -->
+<section class="py-20 bg-vineyard-beige">
+  <div class="container mx-auto px-6 lg:px-10">
+    <h2 class="text-3xl font-bold text-burgundy-reserve mb-6">Últimas Noticias Destacadas</h2>
+
+    <!-- Contenedor para artículo destacado -->
+    <div id="featuredArticleContainer" class="bg-ocean-blue p-8 rounded-3xl shadow-lg text-white">
+      <!-- Se llenará con el artículo destacado desde JS -->
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA FINAL -->
+<section class="py-16 bg-[var(--pure-white)] text-white mb-8">
+  <div class="container mx-auto px-6 lg:px-12">
+    <div class="flex flex-col lg:flex-row items-stretch gap-10">
+
+      <!-- Texto -->
+      <div class="lg:w-1/2 text-center lg:text-left flex">
+        <div class="bg-[var(--pure-white)] rounded-2xl p-8 shadow-lg flex flex-col w-full h-full min-h-[360px]">
+          <div class="flex-grow">
+            <h2 class="text-3xl font-bold mb-4 text-[var(--cyber-green)]">
+              ¿Tienes dudas o quieres más información?
+            </h2>
+            <p class="text-[var(--storm-gray)] mb-6 text-base leading-relaxed">
+              Estamos aquí para ayudarte y responder todas tus consultas sobre cómo formar parte del gremio.
+              Conéctate con nuestra comunidad y descubre cómo juntos impulsamos el desarrollo de Curicó.
+            </p>
+          </div>
+          <div class="flex justify-end mt-6">
+            <a href="/contacto/"
+               class="inline-block bg-harvest-gold text-burgundy-reserve font-semibold px-8 py-3 rounded-full hover:bg-vine-green hover:text-white transition">
+              ¡Contáctanos!
+            </a>
+          </div>
+        </div>
+      </div> <!-- 🔹 Este cierre faltaba -->
+
+      <!-- Video -->
+      <div class="lg:w-1/2 flex justify-center">
+        <div class="w-full rounded-2xl overflow-hidden shadow-lg h-full min-h-[360px]">
+          <iframe 
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/HkORPrehR5M"
+            title="Descubre Curicó"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+
+
+
+
+

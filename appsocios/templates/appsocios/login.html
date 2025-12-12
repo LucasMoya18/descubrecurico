@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión - Descubre Curicó{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-vineyard-beige py-12">
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
+    <!-- Logo -->
+    <div class="flex justify-center mb-6">
+      <img src="{% static 'imagenes/curico-logo.png' %}" alt="Descubre Curicó" class="h-20 w-auto">
+    </div>
+
+    <h2 class="text-2xl font-bold text-burgundy-reserve text-center mb-6">Iniciar Sesión</h2>
+
+    <!-- Formulario -->
+    <form method="POST" action="{% url 'login' %}" class="space-y-4">
+      {% csrf_token %}
+      <!-- Usuario -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-slate-gray mb-1">Usuario</label>
+        <input type="text" name="username" id="username" placeholder="Ingresa tu usuario"
+               class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-harvest-gold focus:outline-none transition">
+      </div>
+
+      <!-- Contraseña -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-slate-gray mb-1">Contraseña</label>
+        <input type="password" name="password" id="password" placeholder="Ingresa tu contraseña"
+               class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-harvest-gold focus:outline-none transition">
+      </div>
+
+      <!-- Recordarme -->
+      <div class="flex items-center justify-between text-sm">
+        <label class="flex items-center gap-2 text-slate-gray">
+          <input type="checkbox" name="remember" class="rounded border-gray-300 focus:ring-harvest-gold">
+          Recordarme
+        </label>
+        <a href="{% url 'appsocios:password_reset' %}" class="text-harvest-gold hover:text-vine-green transition">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <!-- Botón enviar -->
+      <button type="submit"
+              class="w-full bg-harvest-gold text-burgundy-reserve font-semibold py-2 rounded-full hover:bg-vine-green hover:text-white transition mt-4">
+        Iniciar Sesión
+      </button>
+    </form>
+
+    <!-- Registro -->
+    <p class="text-center text-sm text-gray-500 mt-6">
+      ¿No tienes cuenta? 
+      <a href="{% url 'register' %}" class="text-harvest-gold hover:text-vine-green transition font-medium">Regístrate aquí</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

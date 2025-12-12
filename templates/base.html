@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Descubre Curicó{% endblock %}</title>
+
+
+  <!-- ✅ Tailwind CSS vía CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ✅ Configuración global de colores y tema -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'burgundy-reserve': '#1aabb6ff',
+            'vine-green': '#00B140',
+            'harvest-gold': '#FFB400',
+            'barrel-brown': '#5A2E0E',
+            'grape-purple': '#E0006C',
+            'vineyard-beige': '#FFFFFF',
+            'slate-gray': '#1C1C1C',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- ✅ Tus estilos personalizados -->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>window.STATIC_URL = "{% static '' %}";</script>
+</head>
+
+<body class="bg-vineyard-beige text-slate-gray">
+  {% include 'components/navbar.html' %}
+  <main>{% block content %}{% endblock %}</main>
+  {% include 'components/footer.html' %}
+  <script>if (window.lucide) lucide.createIcons();</script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

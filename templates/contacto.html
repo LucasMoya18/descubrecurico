@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contacto - Descubre Curicó{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-burgundy-reserve to-grape-purple text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Contáctanos</h1>
+        <p class="text-xl text-white/90 max-w-2xl mx-auto">
+            Estamos aquí para ayudarte. Envíanos tu consulta y nos pondremos en contacto contigo pronto.
+        </p>
+    </div>
+</section>
+
+<div class="container mx-auto px-4 py-12">
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- Contact Form -->
+        <div class="md:col-span-2">
+            <div class="p-8 bg-white border-2 border-barrel-brown/20 rounded-lg">
+                <h2 class="text-2xl font-bold text-burgundy-reserve mb-6">Envíanos un mensaje</h2>
+                <form id="contactForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="nombre" class="block text-sm font-medium text-slate-gray mb-2">
+                                Nombre completo *
+                            </label>
+                            <input type="text" 
+                                   id="nombre" 
+                                   name="nombre" 
+                                   required
+                                   class="w-full px-4 py-2 border border-barrel-brown/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-vine-green"
+                                   placeholder="Tu nombre">
+                        </div>
+                        <div>
+                            <label for="telefono" class="block text-sm font-medium text-slate-gray mb-2">
+                                Teléfono
+                            </label>
+                            <input type="tel" 
+                                   id="telefono" 
+                                   name="telefono"
+                                   class="w-full px-4 py-2 border border-barrel-brown/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-vine-green"
+                                   placeholder="+56 9 1234 5678">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-slate-gray mb-2">
+                            Email *
+                        </label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               required
+                               class="w-full px-4 py-2 border border-barrel-brown/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-vine-green"
+                               placeholder="tu@email.com">
+                    </div>
+                    
+                    <div>
+                        <label for="mensaje" class="block text-sm font-medium text-slate-gray mb-2">
+                            Mensaje *
+                        </label>
+                        <textarea id="mensaje" 
+                                  name="mensaje" 
+                                  required
+                                  rows="6"
+                                  class="w-full px-4 py-2 border border-barrel-brown/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-vine-green"
+                                  placeholder="Cuéntanos cómo podemos ayudarte..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-vine-green hover:bg-vine-green/90 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="send" class="h-5 w-5"></i>
+                        Enviar mensaje
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Contact Info Sidebar -->
+        <div class="space-y-6">
+            <!-- Ubicación -->
+            <div class="p-6 bg-white border-2 border-barrel-brown/20 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-burgundy-reserve/10 rounded-lg">
+                        <i data-lucide="map-pin" class="w-6 h-6 text-burgundy-reserve"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-burgundy-reserve mb-2">Ubicación</h3>
+                        <p class="text-slate-gray text-sm">
+                            Curicó, Región del Maule<br>
+                            Chile
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Teléfono -->
+            <div class="p-6 bg-white border-2 border-barrel-brown/20 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-vine-green/10 rounded-lg">
+                        <i data-lucide="phone" class="w-6 h-6 text-vine-green"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-burgundy-reserve mb-2">Teléfono</h3>
+                        <a href="tel:+56946699458" class="text-slate-gray text-sm hover:text-vine-green transition-colors">
+                            +56 9 4669 9458
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Email -->
+            <div class="p-6 bg-white border-2 border-barrel-brown/20 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-harvest-gold/10 rounded-lg">
+                        <i data-lucide="mail" class="w-6 h-6 text-harvest-gold"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-burgundy-reserve mb-2">Email</h3>
+                        <a href="mailto:contacto@descubrecurico.cl" class="text-slate-gray text-sm hover:text-vine-green transition-colors break-all">
+                            contacto@descubrecurico.cl
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Horario -->
+            <div class="p-6 bg-white border-2 border-barrel-brown/20 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-grape-purple/10 rounded-lg">
+                        <i data-lucide="clock" class="w-6 h-6 text-grape-purple"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-burgundy-reserve mb-2">Horario de atención</h3>
+                        <p class="text-slate-gray text-sm">
+                            Lunes a Viernes<br>
+                            9:00 - 18:00 hrs
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Redes Sociales -->
+            <div class="p-6 bg-gradient-to-br from-burgundy-reserve to-grape-purple text-white rounded-lg">
+                <h3 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    Síguenos
+                </h3>
+                <div class="flex gap-3">
+                    <a href="https://facebook.com/descubrecurico" target="_blank" rel="noopener noreferrer" class="p-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </a>
+                    <a href="https://www.instagram.com/descubre_curico?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="p-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="mt-12 p-8 bg-gradient-to-r from-vine-green to-vine-green/80 text-white rounded-lg">
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold mb-4">¿Quieres ser parte del gremio?</h2>
+            <p class="text-white/90 mb-6 text-lg">
+                Únete a más de 130 empresas familiares que están logrando un sueño en Curicó
+            </p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSd-2YthTWL29u9iEE9vFgMLXLWVdbOvhjOiGla5IJBRUQT2xw/viewform" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="inline-block bg-white text-vine-green hover:bg-white/90 font-semibold px-8 py-3 rounded-lg transition-colors">
+                ¡Hazte Socio!
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/contacto.js' %}"></script>
+{% endblock %}

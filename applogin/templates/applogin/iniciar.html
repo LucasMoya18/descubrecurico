@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Descubre Curicó{% endblock %}
+
+{% block content %}
+
+    <h1>Bienvenido </h1>
+    <form action="" method="post">
+        {% csrf_token %}    
+        {{ form.as_p }}
+        <button type="submit">Iniciar sesión</button>   
+        </form>    
+
+        {% if mensaje %}
+         <h3> {{ mensaje }} </h3>
+         {% endif %}
+            
+    <a href="{% url 'applogin:registro' %}">Registrarse</a>
+{% endblock %}

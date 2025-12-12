@@ -1,0 +1,25 @@
+{% load static %}
+
+<footer class="bg-burgundy-reserve text-white border-t border-b border-white/20">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center justify-between h-16">
+            <!-- Título del gremio -->
+            <div class="flex flex-col md:flex-row items-center gap-2 md:gap-0 text-center md:text-left">
+                <h3 class="font-medium text-sm">Descubre Curicó</h3>
+                <span class="text-xs text-white/80 md:ml-2">Tierra de Vinos y Experiencias</span>
+            </div>
+
+            <!-- Enlaces -->
+            <div class="flex gap-4 text-xs text-white/80">
+                <a href="#" class="hover:text-white transition-colors">Acerca de</a>
+                <a href="{% url 'contacto' %}" class="hover:text-white transition-colors">Contacto</a>
+                <a href="#" class="hover:text-white transition-colors">Únete</a>
+            </div>
+        </div>
+
+        <!-- Derechos -->
+        <div class="text-center text-white/60 text-xs mt-2">
+            © 2025 Descubre Curicó - Todos los derechos reservados
+        </div>
+    </div>
+</footer>

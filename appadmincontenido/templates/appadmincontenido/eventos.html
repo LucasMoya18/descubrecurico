@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="py-12 bg-gray-50 min-h-screen font-sans">
+  <div class="container mx-auto px-4">
+    
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">Eventos y Actividades</h1>
+      <p class="text-gray-500 mt-2 text-lg">Gestión de la agenda del Valle de Curicó</p>
+    </div>
+
+    <div class="flex justify-center gap-4 mb-10">
+        <a href="{% url 'appadmincontenido:evento_crear' %}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-md transition-transform transform hover:scale-105">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i> Nuevo Evento
+        </a>
+        <a href="{% url 'appadmincontenido:actividad_crear' %}" class="inline-flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-5 py-2.5 rounded-lg shadow-md transition-transform transform hover:scale-105">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i> Nueva Actividad
+        </a>
+    </div>
+
+    <!-- Próximo Evento/Actividad -->
+    {% if proximo_item %}
+    <div class="mb-12 bg-white rounded-xl shadow-lg border border-gray-200 p-6" 
+         id="proximo-evento-container"
+         data-next-titulo="{{ siguiente_item.titulo|default:'' }}"
+         data-next-inicio="{{ siguiente_item.fecha_inicio.isoformat|default:'' }}"
+         data-next-termino="{{ siguiente_item.fecha_termino.isoformat|default:'' }}">
+        <h2 class="text-center text-sm uppercase font-semibold text-hot-magenta tracking-wider mb-2">Próximo en la agenda</h2>
+        <h3 id="proximo-titulo" class="text-center text-3xl font-bold text-vine mb-4">{{ proximo_item.titulo }}</h3>
+        <div id="main-countdown" class="flex justify-center items-baseline gap-4 text-vine font-mono" data-fecha-inicio="{{ proximo_item.fecha_inicio.isoformat }}" data-fecha-termino="{{ proximo_item.fecha_termino.isoformat }}">
+            <!-- El contador principal se insertará aquí -->
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">Eventos</h2>
+        
+        {% if eventos %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in eventos %}
+                {% include 'appadmincontenido/components/card_item.html' with item=item tipo='evento' %}
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-gray-500 bg-white p-4 rounded-lg shadow-sm">No hay eventos registrados actualmente.</p>
+        {% endif %}
+    </div>
+
+    <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-pink-500 pl-4">Actividades</h2>
+        
+        {% if actividades %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in actividades %}
+                {% include 'appadmincontenido/components/card_item.html' with item=item tipo='actividad' %}
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-gray-500 bg-white p-4 rounded-lg shadow-sm">No hay actividades registradas actualmente.</p>
+        {% endif %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const countdownElements = document.querySelectorAll('.countdown, #main-countdown');
+
+    function formatTime(value, label) {
+        return `<div class="text-center">
+                    <span class="text-3xl">${String(value).padStart(2, '0')}</span>
+                    <span class="block text-xs uppercase">${label}</span>
+                </div>`;
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+
+        countdownElements.forEach(el => {
+            const fechaInicioStr = el.dataset.fechaInicio;
+            const fechaTerminoStr = el.dataset.fechaTermino;
+            if (!fechaInicioStr) return;
+            
+            let fechaInicio = new Date(fechaInicioStr);
+            const fechaTermino = fechaTerminoStr ? new Date(fechaTerminoStr) : null;
+            let diff = fechaInicio - now;
+
+            // Lógica especial para el contador principal: cambiar al siguiente evento si el actual comienza
+            if (el.id === 'main-countdown' && diff <= 0) {
+                const container = document.getElementById('proximo-evento-container');
+                // Si tenemos datos del siguiente evento, hacemos el cambio
+                if (container && container.dataset.nextInicio) {
+                    // Actualizar datos del DOM
+                    document.getElementById('proximo-titulo').textContent = container.dataset.nextTitulo;
+                    el.dataset.fechaInicio = container.dataset.nextInicio;
+                    el.dataset.fechaTermino = container.dataset.nextTermino;
+                    
+                    // Limpiar datos del siguiente para no repetir el cambio
+                    container.dataset.nextInicio = ""; 
+                    
+                    // Recalcular variables para esta iteración
+                    fechaInicio = new Date(el.dataset.fechaInicio);
+                    diff = fechaInicio - now;
+                }
+            }
+
+            if (diff <= 0) {
+                if (fechaTermino && now < fechaTermino) {
+                    el.innerHTML = '<span class="text-lg font-bold text-green-600">En proceso</span>';
+                } else {
+                    el.innerHTML = '<span class="text-lg font-bold text-red-500">Finalizado</span>';
+                }
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            if (el.id === 'main-countdown') {
+                el.innerHTML = `
+                    ${formatTime(d, 'Días')}
+                    <span class="text-3xl self-center">:</span>
+                    ${formatTime(h, 'Horas')}
+                    <span class="text-3xl self-center">:</span>
+                    ${formatTime(m, 'Minutos')}
+                    <span class="text-3xl self-center">:</span>
+                    ${formatTime(s, 'Segundos')}
+                `;
+            } else {
+                el.innerHTML = `<span class="text-sm">${d}d ${h}h ${m}m ${s}s</span>`;
+            }
+        });
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // Llama inicial
+});
+</script>
+{% endblock %}

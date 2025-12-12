@@ -1,0 +1,93 @@
+/* Estilos para Encuesta */
+
+select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #1aabb6ff;
+    box-shadow: 0 0 0 3px rgba(26, 171, 182, 0.1);
+}
+
+input[type="radio"] {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.form-group {
+    transition: all 0.3s ease;
+}
+
+.form-group:hover {
+    transform: translateX(4px);
+}
+
+/* Alert styles */
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid #dc2626;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    color: #166534;
+    border-left: 4px solid #22c55e;
+}
+
+.alert p {
+    font-weight: 600;
+}
+
+/* Radio label styling (Sí/No option cards) */
+.radio-card {
+    display: block;
+    padding: 1rem;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.radio-card:hover {
+    border-color: #E0006C;
+}
+
+input[type="radio"]:checked ~ .radio-card,
+input[type="radio"].peer:checked ~ label.radio-card {
+    border-color: #E0006C;
+    background-color: rgba(224, 0, 108, 0.1);
+}
+
+.radio-card span {
+    font-size: 1.125rem;
+}

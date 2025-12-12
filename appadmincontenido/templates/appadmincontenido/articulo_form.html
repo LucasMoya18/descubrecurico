@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% block title %}{% if es_edicion %}Editar{% else %}Crear{% endif %} {{ tipo|default:"Artículo" }} - Descubre Curicó{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-extrabold mb-6 text-vine">
+    {% if es_edicion %}Editar{% else %}Crear{% endif %} {{ tipo|default:"Artículo" }}
+  </h1>
+
+  <form method="post" enctype="multipart/form-data" id="articuloForm" class="space-y-8">
+    {% csrf_token %}
+
+    <!-- PANEL DATOS DEL ARTÍCULO -->
+    <div class="rounded-2xl border border-vine/30 shadow-lg p-6 space-y-6 bg-vine/5">
+
+      <h2 class="text-xl font-bold tracking-wide text-hot-magenta">Información principal</h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide text-vine/80">Título</label>
+          {{ form.titulo.errors }}
+          {{ form.titulo }}
+        </div>
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide text-vine/80">Autor</label>
+          {{ form.autor.errors }}
+          {{ form.autor }}
+        </div>
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide text-vine/80">Portada</label>
+          {{ form.portada.errors }}
+          {{ form.portada }}
+        </div>
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide text-vine/80">Estado</label>
+          {{ form.estado.errors }}
+          {{ form.estado }}
+        </div>
+        <div class="md:col-span-2 space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide text-vine/80">Resumen</label>
+          {{ form.resumen.errors }}
+          {{ form.resumen }}
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 pt-4">
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide text-vine">Categorías existentes</label>
+          {{ form.categorias.errors }}
+          <div class="rounded-xl overflow-hidden ring-1 ring-vine/50">
+            {{ form.categorias }}
+          </div>
+          <p class="text-xs mt-1 text-vine/80">Usa Ctrl/Cmd para selección múltiple.</p>
+        </div>
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide text-vine">Crear nuevas categorías</label>
+            {{ form.nuevas_categorias.errors }}
+            {{ form.nuevas_categorias }}
+          <p class="text-xs mt-1 text-vine/80">Separar por coma. Se añaden automáticamente.</p>
+        </div>
+      </div>
+
+    </div>
+    <!-- FIN PANEL DATOS -->
+
+    <hr class="my-2 border-vine/20">
+
+    <h2 class="text-2xl font-bold flex items-center justify-between text-vine">
+      Bloques de contenido
+      <span class="text-sm font-normal text-vine/80">Arrastra para reordenar</span>
+    </h2>
+
+    {{ formset.management_form }}
+
+    <div class="flex flex-wrap gap-3 mt-2">
+      <button type="button" class="add-btn inline-flex items-center px-4 py-2 rounded-lg border border-vine/80 text-vine/80 hover:bg-vine hover:text-white transition" data-tipo="TEXT">Texto</button>
+      <button type="button" class="add-btn inline-flex items-center px-4 py-2 rounded-lg border border-vine/80 text-vine/80 hover:bg-vine hover:text-white transition" data-tipo="SUBTITLE">Subtítulo</button>
+      <button type="button" class="add-btn inline-flex items-center px-4 py-2 rounded-lg border border-vine/80 text-vine/80 hover:bg-vine hover:text-white transition" data-tipo="IMAGE">Imagen</button>
+      <button type="button" class="add-btn inline-flex items-center px-4 py-2 rounded-lg border border-vine/80 text-vine/80 hover:bg-vine hover:text-white transition" data-tipo="URL">URL</button>
+      <button type="button" class="add-btn inline-flex items-center px-4 py-2 rounded-lg border border-vine/80 text-vine/80 hover:bg-vine hover:text-white transition" data-tipo="YOUTUBE">YouTube</button>
+      <button type="button" class="add-btn inline-flex items-center px-4 py-2 rounded-lg border border-vine/80 text-vine/80 hover:bg-vine hover:text-white transition" data-tipo="VIDEO">Video</button>
+    </div>
+
+    <div id="bloquesContainer" class="space-y-5">
+      <!-- Bloques existentes se renderizan aquí -->
+      {% for form_bloque in formset %}
+        <div class="bloque-item rounded-xl border border-vine/20 p-4 bg-white shadow relative">
+          <button type="button" class="delete-bloque absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold transition">×</button>
+          
+          <div class="flex items-center justify-between mb-3">
+            <span class="drag-handle cursor-move text-sm select-none text-vine/80" draggable="true">⠿</span>
+            <span class="tipo-label text-xs uppercase tracking-wide font-semibold text-vine">
+              {{ form_bloque.tipo.value|default:"" }}
+            </span>
+          </div>
+
+          <!-- ID (muy importante para la edición) -->
+          <div class="hidden">
+            {{ form_bloque.id }}
+          </div>
+
+          <!-- Orden -->
+          <div class="hidden">
+            {{ form_bloque.orden }}
+          </div>
+
+          <!-- Tipo -->
+          <div class="hidden">
+            {{ form_bloque.tipo }}
+          </div>
+
+          <!-- Subtítulo -->
+          <div class="field-subtitulo mb-3 {% if form_bloque.tipo.value != 'SUBTITLE' %}hidden{% endif %}">
+            <label class="text-sm block mb-1 text-vine">Subtítulo</label>
+            {{ form_bloque.subtitulo.errors }}
+            {{ form_bloque.subtitulo }}
+          </div>
+
+          <!-- Texto -->
+          <div class="field-texto mb-3 {% if form_bloque.tipo.value != 'TEXT' %}hidden{% endif %}">
+            <label class="text-sm block mb-1 text-vine">Texto</label>
+            {{ form_bloque.texto.errors }}
+            {{ form_bloque.texto }}
+          </div>
+
+          <!-- Imagen -->
+          <div class="field-imagen grid md:grid-cols-3 gap-3 mb-3 {% if form_bloque.tipo.value != 'IMAGE' %}hidden{% endif %}">
+            <div>
+              <label class="text-sm block mb-1 text-vine">Imagen</label>
+              {{ form_bloque.imagen.errors }}
+              {{ form_bloque.imagen }}
+            </div>
+            <div>
+              <label class="text-sm block mb-1 text-vine">Pie de foto</label>
+              {{ form_bloque.pie_de_foto.errors }}
+              {{ form_bloque.pie_de_foto }}
+            </div>
+            <div>
+              <label class="text-sm block mb-1 text-vine">Estilo</label>
+              {{ form_bloque.estilo_imagen.errors }}
+              {{ form_bloque.estilo_imagen }}
+            </div>
+          </div>
+
+          <!-- URL -->
+          <div class="field-url mb-3 {% if form_bloque.tipo.value not in 'URL,YOUTUBE,VIDEO' %}hidden{% endif %}">
+            <label class="text-sm block mb-1 text-vine">URL / YouTube / Video</label>
+            {{ form_bloque.url.errors }}
+            {{ form_bloque.url }}
+          </div>
+
+          <!-- DELETE -->
+          <div class="hidden">
+            {{ form_bloque.DELETE }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button type="submit" class="px-6 py-3 rounded-xl text-white font-semibold shadow-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 ring-pink-500 hover:scale-[1.02] active:scale-[0.99] bg-gradient-to-r from-pink-600 to-purple-600">
+        Guardar {{ tipo|default:"artículo" }}
+      </button>
+      <p class="text-sm text-vine/80">La fecha se asigna automáticamente.</p>
+    </div>
+  </form>
+</div>
+
+<template id="bloqueTemplate">
+  <div class="bloque-item rounded-xl border border-vine/20 p-4 bg-white shadow relative">
+    <button type="button" class="delete-bloque absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold transition">×</button>
+    <div class="flex items-center justify-between mb-3">
+      <span class="drag-handle cursor-move text-sm select-none text-vine/80" draggable="true">⠿</span>
+      <span class="tipo-label text-xs uppercase tracking-wide font-semibold text-vine"></span>
+    </div>
+    <!-- Orden (hidden) -->
+    <input type="number" name="__prefix__-orden" class="orden-field hidden" value="">
+    <!-- Tipo (hidden) -->
+    <input type="hidden" name="__prefix__-tipo" value="">
+    <!-- Subtítulo -->
+    <div class="field-subtitulo mb-3 hidden">
+      <label class="text-sm block mb-1 text-vine">Subtítulo</label>
+      <input type="text" name="__prefix__-subtitulo" class="w-full px-3 py-2 rounded-lg border border-vine/30">
+    </div>
+    <!-- Texto -->
+    <div class="field-texto mb-3 hidden">
+      <label class="text-sm block mb-1 text-vine">Texto</label>
+      <textarea name="__prefix__-texto" rows="3" class="w-full px-3 py-2 rounded-lg border border-vine/30"></textarea>
+    </div>
+    <!-- Imagen -->
+    <div class="field-imagen grid md:grid-cols-3 gap-3 mb-3 hidden">
+      <div>
+        <label class="text-sm block mb-1 text-vine">Imagen</label>
+        <input type="file" name="__prefix__-imagen" class="w-full px-3 py-2 rounded-lg border border-vine/30">
+      </div>
+      <div>
+        <label class="text-sm block mb-1 text-vine">Pie de foto</label>
+        <input type="text" name="__prefix__-pie_de_foto" class="w-full px-3 py-2 rounded-lg border border-vine/30">
+      </div>
+      <div>
+        <label class="text-sm block mb-1 text-vine">Estilo</label>
+        <select name="__prefix__-estilo_imagen" class="w-full px-3 py-2 rounded-lg border border-vine/30">
+          <option value="default">Default</option>
+          <option value="rounded">Redondeada</option>
+          <option value="wide">Ancho completo</option>
+          <option value="shadow">Sombra</option>
+        </select>
+      </div>
+    </div>
+    <!-- URL -->
+    <div class="field-url mb-3 hidden">
+      <label class="text-sm block mb-1 text-vine">URL / YouTube / Video</label>
+      <input type="url" name="__prefix__-url" class="w-full px-3 py-2 rounded-lg border border-vine/30" placeholder="https://...">
+    </div>
+    <!-- DELETE -->
+    <div class="hidden">
+      <input type="checkbox" name="__prefix__-DELETE">
+    </div>
+  </div>
+</template>
+
+<style>
+  .placeholder { background-color: #f0f9ff; border: 2px dashed #3b82f6; }
+  .bloque-item.dragging { opacity: 0.6; background: #fafafa; }
+</style>
+
+<script>
+(function(){
+  const container = document.getElementById('bloquesContainer');
+  const template = document.getElementById('bloqueTemplate')?.content;
+  const addButtons = document.querySelectorAll('.add-btn');
+  const totalFormsInput = document.querySelector('[name="{{ formset.prefix }}-TOTAL_FORMS"]');
+  const prefix = "{{ formset.prefix }}";
+
+  function showFieldsByType(blockElement, tipo) {
+    blockElement.querySelectorAll('[class*="field-"]').forEach(field => field.classList.add('hidden'));
+    if (tipo === 'TEXT') blockElement.querySelector('.field-texto')?.classList.remove('hidden');
+    else if (tipo === 'SUBTITLE') blockElement.querySelector('.field-subtitulo')?.classList.remove('hidden');
+    else if (tipo === 'IMAGE') blockElement.querySelector('.field-imagen')?.classList.remove('hidden');
+    else if (['URL','YOUTUBE','VIDEO'].includes(tipo)) blockElement.querySelector('.field-url')?.classList.remove('hidden');
+  }
+  
+  function updateOrden() {
+    container.querySelectorAll('.bloque-item').forEach((el, idx) => {
+      const ordenInput = el.querySelector('input[name$="-orden"]');
+      if (ordenInput) ordenInput.value = idx;
+    });
+  }
+
+  function createBlock(tipo) {
+    const index = parseInt(totalFormsInput.value, 10);
+    const clone = document.importNode(template, true);
+    const root = clone.querySelector('.bloque-item');
+    root.querySelectorAll('input, textarea, select').forEach(field => {
+      field.name = field.name.replace('__prefix__', prefix + '-' + index);
+      field.id = field.name;
+    });
+    const tipoHidden = root.querySelector('input[name$="-tipo"]');
+    if (tipoHidden) tipoHidden.value = tipo;
+    const label = root.querySelector('.tipo-label');
+    if (label) label.textContent = tipo;
+    showFieldsByType(root, tipo);
+    container.appendChild(root);
+    totalFormsInput.value = index + 1;
+    updateOrden();
+    attachEventListeners(root);
+  }
+
+  function attachEventListeners(blockElement) {
+    const deleteBtn = blockElement.querySelector('.delete-bloque');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const delInput = blockElement.querySelector('input[name$="-DELETE"]');
+        if (delInput) delInput.checked = true;
+        blockElement.style.display = 'none'; // Ocultar en lugar de remover
+        updateOrden();
+      });
+    }
+
+    // tipo field change for existing blocks
+    const tipoInput = blockElement.querySelector('input[name$="-tipo"], select[name$="-tipo"]');
+    if (tipoInput) {
+      tipoInput.addEventListener('change', () => {
+        showFieldsByType(blockElement, tipoInput.value);
+        const label = blockElement.querySelector('.tipo-label');
+        if (label) label.textContent = tipoInput.value;
+      });
+    }
+  }
+
+  // --- Nueva Lógica de Arrastrar y Soltar ---
+  let draggedItem = null;
+  let placeholder = null;
+
+  function createPlaceholder(item) {
+    const p = document.createElement('div');
+    p.className = 'placeholder';
+    p.style.height = `${item.offsetHeight}px`;
+    return p;
+  }
+
+  container.addEventListener('dragstart', (e) => {
+    if (!e.target.classList.contains('drag-handle')) {
+      e.preventDefault();
+      return;
+    }
+    draggedItem = e.target.closest('.bloque-item');
+    e.dataTransfer.effectAllowed = 'move';
+    
+    // Usar un timeout para que el navegador capture el "fantasma" antes de aplicar estilos
+    setTimeout(() => {
+      draggedItem.classList.add('dragging');
+      placeholder = createPlaceholder(draggedItem);
+      draggedItem.parentNode.insertBefore(placeholder, draggedItem);
+      draggedItem.style.display = 'none'; // Ocultar el original
+    }, 0);
+  });
+
+  container.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const target = e.target.closest('.bloque-item');
+    if (target && target !== draggedItem) {
+      const rect = target.getBoundingClientRect();
+      const isAfter = e.clientY > rect.top + rect.height / 2;
+      if (isAfter) {
+        target.parentNode.insertBefore(placeholder, target.nextSibling);
+      } else {
+        target.parentNode.insertBefore(placeholder, target);
+      }
+    }
+  });
+
+  container.addEventListener('dragend', (e) => {
+    if (draggedItem) {
+      draggedItem.style.display = '';
+      draggedItem.classList.remove('dragging');
+      if (placeholder && placeholder.parentNode) {
+        placeholder.parentNode.replaceChild(draggedItem, placeholder);
+      }
+      draggedItem = null;
+      placeholder = null;
+      updateOrden();
+    }
+  });
+
+  // Hacer que los drag-handles sean arrastrables
+  document.querySelectorAll('.drag-handle').forEach(handle => {
+    handle.closest('.bloque-item').setAttribute('draggable', 'true');
+  });
+
+  // attach to existing
+  document.querySelectorAll('.bloque-item').forEach(block => attachEventListeners(block));
+
+  // add buttons
+  addButtons.forEach(btn => btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    createBlock(btn.dataset.tipo);
+  }));
+
+  // defaults when creating
+  if (totalFormsInput && parseInt(totalFormsInput.value, 10) === 0) {
+    createBlock('SUBTITLE'); createBlock('TEXT'); createBlock('TEXT');
+  }
+})();
+</script>
+{% endblock %}

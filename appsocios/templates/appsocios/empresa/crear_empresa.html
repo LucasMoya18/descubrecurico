@@ -1,0 +1,362 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Empresa - Descubre Curicó{% endblock %}
+
+{% block content %}
+<!-- Incluir CSS personalizado -->
+<link rel="stylesheet" href="{% static 'css/crear_socio.css' %}">
+<link rel="stylesheet" href="{% static 'css/mapa_modal.css' %}">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-burgundy-reserve to-grape-purple text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">{% if es_edicion %}Editar Empresa{% else %}Registrar Empresa{% endif %}</h1>
+        <p class="text-xl text-white/90 max-w-2xl mx-auto">
+            {% if es_edicion %}Actualiza la información de tu empresa{% else %}Registra la información de tu empresa en la plataforma de Descubre Curicó.{% endif %}
+        </p>
+    </div>
+</section>
+
+<!-- Formulario -->
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="p-8 bg-white border-2 border-barrel-brown/20 rounded-lg">
+            
+                <!-- Alerta de éxito con redirección automática -->
+                {% if empresa_creada %}
+                    <div id="successAlert" class="alert alert-success mb-6">
+                        <p class="font-semibold">✅ ¡Empresa Creada Exitosamente!</p>
+                        <p class="text-sm mt-2">Tu empresa ha sido registrada. Ahora completa una breve encuesta para ayudarnos a conocer mejor tu negocio.</p>
+                        <p class="text-sm mt-3">Serás redirigido a la encuesta en <span id="countdown">5</span> segundos...</p>
+                        <div class="mt-3 w-full bg-gray-300 rounded-full h-1 overflow-hidden">
+                            <div id="progressBar" class="bg-green-500 h-full rounded-full" style="width: 100%; transition: width 1s linear;"></div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Mensajes de error -->
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags %}
+                        <div class="alert alert-error mb-6">
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- RUN del Socio (solo en creación) -->
+                {% if not es_edicion %}
+                <div class="form-section">
+                    <h2>Información del Socio</h2>
+                    
+                    <div>
+                        <label for="id_run_socio">
+                            RUN del Socio *
+                        </label>
+                        {{ form.run_socio }}
+                        {% if form.run_socio.errors %}
+                            <span class="error-message">{{ form.run_socio.errors.0 }}</span>
+                        {% endif %}
+                        <small style="color: #666; display: block; margin-top: 0.5rem;">
+                            Ingresa el RUN del socio que registrará esta empresa.
+                        </small>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Información de la Empresa -->
+                <div class="form-section">
+                    <h2>Información General</h2>
+                    
+                    <div>
+                        <label for="{{ form.nombre.id_for_label }}">
+                            Nombre de la Empresa *
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <span class="error-message">{{ form.nombre.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="{{ form.rut.id_for_label }}">
+                                RUT de la Empresa
+                            </label>
+                            {{ form.rut }}
+                            {% if form.rut.errors %}
+                                <span class="error-message">{{ form.rut.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.foto.id_for_label }}">
+                                Foto/Logo
+                            </label>
+                            {{ form.foto }}
+                            {% if form.foto.errors %}
+                                <span class="error-message">{{ form.foto.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de Ubicación -->
+                <div class="form-section">
+                    <h2>Ubicación</h2>
+                    
+                    <div>
+                        <label for="{{ form.direccion_completa.id_for_label }}">
+                            Dirección Completa
+                        </label>
+                        {{ form.direccion_completa }}
+                        {% if form.direccion_completa.errors %}
+                            <span class="error-message">{{ form.direccion_completa.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.calle.id_for_label }}">
+                            Calle
+                        </label>
+                        {{ form.calle }}
+                        {% if form.calle.errors %}
+                            <span class="error-message">{{ form.calle.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="id_socio_region">
+                                Región *
+                            </label>
+                            <select id="id_socio_region" name="socio_region" required>
+                                <option value="">-- Selecciona una región --</option>
+                                {% for region in regions %}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.socio_region.errors %}
+                                <span class="error-message">{{ form.socio_region.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="id_socio_comuna">
+                            Comuna *
+                        </label>
+                        <select id="id_socio_comuna" name="socio_comuna" required>
+                            <option value="">-- Selecciona una comuna --</option>
+                            {% for comuna in comunas %}
+                                <option value="{{ comuna.id }}" data-region-id="{{ comuna.provincia.region.id }}">
+                                    {{ comuna.comuna }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.socio_comuna.errors %}
+                            <span class="error-message">{{ form.socio_comuna.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="{{ form.latitud.id_for_label }}">
+                                Latitud
+                            </label>
+                            {{ form.latitud }}
+                            {% if form.latitud.errors %}
+                                <span class="error-message">{{ form.latitud.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.longitud.id_for_label }}">
+                                Longitud
+                            </label>
+                            {{ form.longitud }}
+                            {% if form.longitud.errors %}
+                                <span class="error-message">{{ form.longitud.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <button type="button" id="btn-abrir-mapa" class="btn-primary" style="width: 100%;">
+                        <i data-lucide="map"></i>
+                        Seleccionar ubicación en mapa
+                    </button>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="form-section">
+                    <h2>Información de Contacto</h2>
+                    
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="{{ form.telefono.id_for_label }}">
+                                Teléfono
+                            </label>
+                            {{ form.telefono }}
+                            {% if form.telefono.errors %}
+                                <span class="error-message">{{ form.telefono.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.correo.id_for_label }}">
+                                Email
+                            </label>
+                            {{ form.correo }}
+                            {% if form.correo.errors %}
+                                <span class="error-message">{{ form.correo.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Redes Sociales y Web -->
+                <div class="form-section">
+                    <h2>Presencia Digital</h2>
+                    
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="{{ form.instagram.id_for_label }}">
+                                Instagram
+                            </label>
+                            {{ form.instagram }}
+                            {% if form.instagram.errors %}
+                                <span class="error-message">{{ form.instagram.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.facebook.id_for_label }}">
+                                Facebook
+                            </label>
+                            {{ form.facebook }}
+                            {% if form.facebook.errors %}
+                                <span class="error-message">{{ form.facebook.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.web.id_for_label }}">
+                            Sitio Web
+                        </label>
+                        {{ form.web }}
+                        {% if form.web.errors %}
+                            <span class="error-message">{{ form.web.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Clasificación -->
+                <div class="form-section">
+                    <h2>Clasificación de la Empresa</h2>
+                    
+                    <div class="form-row two-cols">
+                        <div>
+                            <label for="{{ form.rubro.id_for_label }}">
+                                Rubro
+                            </label>
+                            {{ form.rubro }}
+                            {% if form.rubro.errors %}
+                                <span class="error-message">{{ form.rubro.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.tipo_comercializacion.id_for_label }}">
+                                Tipo de Comercialización
+                            </label>
+                            {{ form.tipo_comercializacion }}
+                            {% if form.tipo_comercializacion.errors %}
+                                <span class="error-message">{{ form.tipo_comercializacion.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="btn-container">
+                    <button type="submit" class="btn-primary">
+                        <i data-lucide="check-circle"></i>
+                        {% if es_edicion %}Guardar cambios{% else %}Registrar Empresa{% endif %}
+                    </button>
+                    <a href="{% url 'appsocios:lista_empresas' %}" class="btn-secondary">
+                        <i data-lucide="x-circle"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal del Mapa -->
+<div id="modal-mapa" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Seleccionar ubicación en el mapa</h2>
+            <button type="button" class="modal-close-btn" id="btn-cerrar-mapa">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="mapa"></div>
+            <div class="mapa-info">
+                <p><strong>Latitud:</strong> <span id="info-lat">--</span></p>
+                <p><strong>Longitud:</strong> <span id="info-lng">--</span></p>
+                <p style="margin-top: 0.75rem; font-size: 0.75rem; color: #999;">Haz clic en el mapa para seleccionar la ubicación</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn modal-btn-secondary" id="btn-cancelar-mapa">
+                Cancelar
+            </button>
+            <button type="button" class="modal-btn modal-btn-primary" id="btn-guardar-ubicacion">
+                <i data-lucide="check"></i>
+                Guardar ubicación
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/crear_empresa.js' %}"></script>
+<!-- Leaflet JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<!-- Script del mapa -->
+<script src="{% static 'js/mapa_ubicacion.js' %}"></script>
+
+<!-- Script para contador regresivo -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const successAlert = document.getElementById('successAlert');
+        const countdownEl = document.getElementById('countdown');
+        const progressBar = document.getElementById('progressBar');
+        
+        if (successAlert && countdownEl) {
+            let timeLeft = 5;
+            const timeTotal = 5;
+            
+            const interval = setInterval(function() {
+                countdownEl.textContent = timeLeft;
+                const percentage = (timeLeft / timeTotal) * 100;
+                progressBar.style.width = percentage + '%';
+                
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(interval);
+                    // Redirigir a la encuesta
+                    window.location.href = '{% url "appsocios:encuesta" %}';
+                }
+            }, 1000);
+        }
+    });
+</script>
+<script src="{% static 'js/mapa_ubicacion.js' %}"></script>
+{% endblock %}

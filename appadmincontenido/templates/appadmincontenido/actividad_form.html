@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-10 bg-gray-50 min-h-screen flex justify-center">
+  <div class="container mx-auto px-4 max-w-4xl">
+    
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-8">
+      
+      <h1 class="text-2xl font-light text-blue-500 mb-6">
+        {% if accion == 'Crear' %}Agregar nuevo{% else %}Editar{% endif %} 
+        {% if tipo == 'actividad' %}actividad{% else %}evento{% endif %}
+      </h1>
+
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+        
+        <div>
+          {{ form.titulo }}
+          {{ form.titulo.errors }}
+        </div>
+
+        <div>
+          {{ form.descripcion }}
+          {{ form.descripcion.errors }}
+        </div>
+
+        <div>
+          {{ form.lugar }}
+          {{ form.lugar.errors }}
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha de inicio</label>
+                {{ form.fecha_inicio }}
+                {{ form.fecha_inicio.errors }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha de término</label>
+                {{ form.fecha_termino }}
+                {{ form.fecha_termino.errors }}
+            </div>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded shadow-sm transition-colors duration-200">
+            {% if accion == 'Crear' %}Agregar{% else %}Guardar{% endif %} Evento
+          </button>
+          
+          <a href="{% url 'appadmincontenido:eventos' %}" class="ml-4 text-gray-500 hover:text-gray-700 font-medium">
+             Cancelar
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Encuesta Empresarial - Descubre Curicó{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/encuesta.css' %}"
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-burgundy-reserve to-grape-purple text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Encuesta Empresarial</h1>
+        <p class="text-xl text-white/90 max-w-2xl mx-auto">
+            Ayúdanos a conocer mejor tu empresa y el valor que aporta a Curicó
+        </p>
+    </div>
+</section>
+
+<!-- Formulario -->
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-2xl mx-auto">
+        <div class="p-8 bg-white border-2 border-barrel-brown/20 rounded-lg shadow-lg">
+
+            
+            <!-- Alerta de éxito con redirección automática -->
+            {% if encuesta_enviada %}
+                <div id="successAlert" class="alert alert-success mb-6">
+                    <p class="font-semibold">✅ ¡Gracias por responder la encuesta!</p>
+                    <p class="text-sm mt-2">Serás redirigido a la lista de empresas en <span id="countdown">5</span> segundos...</p>
+                    <div class="mt-3 w-full bg-gray-300 rounded-full h-1 overflow-hidden">
+                        <div id="progressBar" class="bg-green-500 h-full rounded-full" style="width: 100%; transition: width 1s linear;"></div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Mensajes de error/éxito -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-error{% else %}alert-success{% endif %} mb-6" style="padding: 15px; border-radius: 8px; {% if message.tags %}background-color: #fee2e2; color: #991b1b; border-left: 4px solid #dc2626;{% else %}background-color: #dcfce7; color: #166534; border-left: 4px solid #22c55e;{% endif %}">
+                        <p class="font-semibold">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" id="surveyForm" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Pregunta 1: DESCUENTO POR COMERCIALIZACIÓN -->
+                <div class="form-group p-6 border-l-4 border-burgundy-reserve bg-gray-50 rounded">
+                    <label class="block font-bold text-lg mb-4 text-slate-gray">
+                        {{ form.pregunta_1_descuento_comercializacion.label }}
+                    </label>
+                    <div class="flex gap-4 flex-wrap">
+                        {% for choice in form.pregunta_1_descuento_comercializacion %}
+                            <div class="relative flex-1 min-w-32">
+                                {{ choice.tag }}
+                                <label for="{{ choice.id_for_label }}" class="radio-card">
+                                    <span>{{ choice.choice_label }}</span>
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.pregunta_1_descuento_comercializacion.errors %}
+                        <div class="text-red-600 text-sm mt-3">{{ form.pregunta_1_descuento_comercializacion.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Pregunta 2: TIPO DE DESCUENTO (condicional) -->
+                <div class="form-group p-6 border-l-4 border-grape-purple bg-gray-50 rounded" id="pregunta_2_group" style="display: none;">
+                    <label class="block font-bold text-lg mb-4 text-slate-gray">
+                        {{ form.pregunta_2_tipo_descuento.label }}
+                    </label>
+                    {{ form.pregunta_2_tipo_descuento }}
+                    {% if form.pregunta_2_tipo_descuento.errors %}
+                        <div class="text-red-600 text-sm mt-3">{{ form.pregunta_2_tipo_descuento.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Pregunta 2b: PORCENTAJE (condicional) -->
+                <div class="form-group p-6 border-l-4 border-grape-purple bg-gray-50 rounded" id="pregunta_2_porcentaje_group" style="display: none;">
+                    <label class="block font-bold text-lg mb-4 text-slate-gray">
+                        {{ form.pregunta_2_porcentaje.label }}
+                    </label>
+                    {{ form.pregunta_2_porcentaje }}
+                    {% if form.pregunta_2_porcentaje.errors %}
+                        <div class="text-red-600 text-sm mt-3">{{ form.pregunta_2_porcentaje.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Pregunta 3: VALOR AL GREMIO -->
+                <div class="form-group p-6 border-l-4 border-burgundy-reserve bg-gray-50 rounded">
+                    <label class="block font-bold text-lg mb-4 text-slate-gray">
+                        {{ form.pregunta_3_valor_empresa.label }}
+                    </label>
+                    {{ form.pregunta_3_valor_empresa }}
+                    {% if form.pregunta_3_valor_empresa.errors %}
+                        <div class="text-red-600 text-sm mt-3">{{ form.pregunta_3_valor_empresa.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Pregunta 4: VALOR A LA CIUDAD -->
+                <!-- Pregunta 4: EMPRESA REFERENCIA -->
+                <div class="form-group p-6 border-l-4 border-grape-purple bg-gray-50 rounded">
+                    <label class="block font-bold text-lg mb-4 text-slate-gray">
+                        {{ form.pregunta_4_empresa_referencia.label }}
+                    </label>
+                    {{ form.pregunta_4_empresa_referencia }}
+                    {% if form.pregunta_4_empresa_referencia.errors %}
+                        <div class="text-red-600 text-sm mt-3">{{ form.pregunta_4_empresa_referencia.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- pregunta_6 removed per request -->
+
+                <!-- Botones -->
+                <div class="flex gap-4 justify-center mt-8 pt-6 border-t border-gray-200">
+                    <button type="submit" class="px-8 py-3 bg-burgundy-reserve text-white font-bold rounded-lg hover:opacity-90 transition shadow-md">
+                        ✅ Enviar Encuesta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const pregunta1Radios = document.querySelectorAll('input[name="pregunta_1_descuento_comercializacion"]');
+  const pregunta2Group = document.getElementById('pregunta_2_group');
+  const pregunta2PorcentajeGroup = document.getElementById('pregunta_2_porcentaje_group');
+  const pregunta1Container = pregunta1Radios.length ? pregunta1Radios[0].closest('.form-group') : null;
+
+  function valueIndicatesSi(val){
+    if(!val) return false;
+    val = String(val).toLowerCase().trim();
+    return val === 'si' || val === 'sí' || val === 's' || val === '1' || val === 'true' || val === 'yes';
+  }
+
+  function togglePregunta2() {
+    const selected = document.querySelector('input[name="pregunta_1_descuento_comercializacion"]:checked');
+    const selVal = selected ? selected.value : null;
+    console.log('togglePregunta2 called, selected:', selVal);
+    const show = valueIndicatesSi(selVal);
+    if (pregunta2Group) pregunta2Group.style.display = show ? 'block' : 'none';
+    if (pregunta2PorcentajeGroup) {
+      pregunta2PorcentajeGroup.style.display = show ? 'block' : 'none';
+      if(!show){
+         const input = pregunta2PorcentajeGroup.querySelector('input');
+         if(input) input.value = '';
+      }
+    }
+  }
+
+  // remove any button that only contains 5 dashes (-----)
+  function removeDashButtons(){
+    document.querySelectorAll('button').forEach(btn=>{
+      const txt = (btn.textContent || '').replace(/\s+/g,'').trim();
+      if(txt === '-----') btn.remove();
+    });
+  }
+
+  // Inicializar estado
+  togglePregunta2();
+  removeDashButtons();
+
+  pregunta1Radios.forEach(radio => {
+    radio.addEventListener('change', togglePregunta2);
+  });
+
+  if (pregunta1Container) {
+    pregunta1Container.addEventListener('click', function(e) {
+      const target = e.target.closest('label, input');
+      if (target) {
+        setTimeout(togglePregunta2, 0);
+      }
+    });
+  }
+
+  // Si la encuesta fue enviada, hacer redirección con countdown
+  const successAlert = document.getElementById('successAlert');
+    if (successAlert) {
+        let timeLeft = 5;
+        const countdownEl = document.getElementById('countdown');
+        const progressBar = document.getElementById('progressBar');
+
+        const interval = setInterval(function() {
+            countdownEl.textContent = timeLeft;
+            const percentage = (timeLeft / 5) * 100;
+            progressBar.style.width = percentage + '%';
+            timeLeft--;
+
+            if (timeLeft < 0) {
+                clearInterval(interval);
+                window.location.href = '{% url "appsocios:lista_empresas" %}';
+            }
+        }, 1000);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,31 @@
+:root {
+  /*Paleta Neofuturista Vibrante */
+  --cyber-green: #00FF88;       
+  --electric-violet: #7C00FF;   
+  --hot-magenta: #FF1F8F;       
+  --aqua-sky: #00CFFF;          
+  --sun-peach: #FFB347;         
+  --graphite-black: #121212;    
+  --storm-gray: #2A2A2A;        
+  --pure-white: #FFFFFF;        
+
+  /* Alias para compatibilidad con las plantillas actuales */
+  --vine-green: var(--cyber-green);
+  --burgundy-reserve: var(--hot-magenta);
+  --harvest-gold: var(--sun-peach);
+  --barrel-brown: var(--graphite-black);
+  --grape-purple: var(--electric-violet);
+  --vineyard-beige: var(--storm-gray);
+  --slate-gray: var(--graphite-black);
+} 
+
+/* Clases utilitarias de line clamp */
+.line-clamp-2 { --line-clamp: 2; }
+.line-clamp-3 { --line-clamp: 3; }
+
+/* Transiciones suaves globales */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
