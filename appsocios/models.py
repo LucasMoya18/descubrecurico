@@ -2,6 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
+from django.contrib.auth.models import User
 
 # Create your models here.
 #-- Validador de RUN ---
@@ -104,6 +105,7 @@ class TipoComercializacion(models.Model):
 # --- Modelo de Socios ---
 class Socio(models.Model):
     socio_id = models.AutoField(primary_key=True)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='socio')
     socio_rut = models.CharField(max_length=10, verbose_name='Rut', unique=True,validators=[validar_run])
     socio_nombre = models.CharField(max_length=50, verbose_name='Nombre')
     socio_apellido_paterno = models.CharField(max_length=50, verbose_name='Apellido Paterno')
@@ -116,6 +118,7 @@ class Socio(models.Model):
     socio_comuna = models.ForeignKey(Comuna, on_delete=models.PROTECT, verbose_name='Comuna')
     socio_region = models.ForeignKey(Region, on_delete=models.PROTECT, verbose_name='Región')
     socio_estado = models.CharField(max_length=50, verbose_name='Estado')
+    socio_contraseña = models.CharField(max_length=128, verbose_name='Contraseña', blank=True, null=True)
 
     class Meta:
         db_table = 'Socio'
@@ -132,7 +135,10 @@ class Empresa(models.Model):
     rut = models.CharField(max_length=20, unique=True, null=True, blank=True)
     direccion_completa = models.TextField(null=True, blank=True)
     calle = models.CharField(max_length=255, null=True, blank=True)
-    comuna = models.CharField(max_length=100, null=True, blank=True)
+    comuna = models.ForeignKey(
+        Comuna, null=True, blank=True, on_delete=models.SET_NULL,
+        db_column='comuna_id', related_name='empresas'
+    )
     telefono = models.CharField(max_length=30, null=True, blank=True)
     correo = models.EmailField(max_length=255, null=True, blank=True)
     instagram = models.CharField(max_length=255, null=True, blank=True)

@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Cambiar Contraseña - Descubre Curicó{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Cambiar Contraseña</h1>
+            <p class="text-gray-600">Actualiza tu contraseña de forma segura</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Form Container -->
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Contraseña Actual -->
+                <div class="relative">
+                    <label for="id_contrasena_actual" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.contrasena_actual.label }}
+                    </label>
+                    <div class="relative">
+                        {{ form.contrasena_actual }}
+                        <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" data-target="id_contrasena_actual">
+                            <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    {% if form.contrasena_actual.errors %}
+                        <div class="text-red-500 text-sm mt-2">
+                            {% for error in form.contrasena_actual.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if form.contrasena_actual.help_text %}
+                        <p class="text-gray-500 text-xs mt-1">{{ form.contrasena_actual.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Contraseña Nueva -->
+                <div class="relative">
+                    <label for="id_contrasena_nueva" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.contrasena_nueva.label }}
+                    </label>
+                    <div class="relative">
+                        {{ form.contrasena_nueva }}
+                        <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" data-target="id_contrasena_nueva">
+                            <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    {% if form.contrasena_nueva.errors %}
+                        <div class="text-red-500 text-sm mt-2">
+                            {% for error in form.contrasena_nueva.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if form.contrasena_nueva.help_text %}
+                        <p class="text-gray-500 text-xs mt-1">{{ form.contrasena_nueva.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Confirmar Contraseña Nueva -->
+                <div class="relative">
+                    <label for="id_contrasena_nueva_confirmacion" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.contrasena_nueva_confirmacion.label }}
+                    </label>
+                    <div class="relative">
+                        {{ form.contrasena_nueva_confirmacion }}
+                        <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" data-target="id_contrasena_nueva_confirmacion">
+                            <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    {% if form.contrasena_nueva_confirmacion.errors %}
+                        <div class="text-red-500 text-sm mt-2">
+                            {% for error in form.contrasena_nueva_confirmacion.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if form.contrasena_nueva_confirmacion.help_text %}
+                        <p class="text-gray-500 text-xs mt-1">{{ form.contrasena_nueva_confirmacion.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Buttons -->
+                <div class="flex gap-4 justify-center pt-6">
+                    <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                        Actualizar Contraseña
+                    </button>
+                    <a href="{% url 'appsocios:lista_empresas' %}" class="px-8 py-3 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Back Link -->
+        <div class="text-center mt-8">
+            <a href="{% url 'appsocios:editar_socio' %}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                ← Volver a Editar Perfil
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.querySelector('.eye-icon').classList.add('text-blue-600');
+            } else {
+                input.type = 'password';
+                this.querySelector('.eye-icon').classList.remove('text-blue-600');
+            }
+        });
+    });
+</script>
+{% endblock %}
+

@@ -32,7 +32,7 @@
       <!-- NAV -->
       <nav class="hidden md:flex items-center gap-6">
         <a href="{% url 'home' %}" 
-           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'inicio' %}text-harvest-gold{% endif %}">
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'home' %}text-harvest-gold{% endif %}">
           Inicio
         </a>
         <a href="{% url 'appadmincontenido:articulos' %}" 
@@ -44,17 +44,54 @@
           Próximos eventos
         </a>
         <a href="{% url 'appsocios:lista_empresas' %}" 
-           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'empresas' %}text-harvest-gold{% endif %}">
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'lista_empresas' %}text-harvest-gold{% endif %}">
           Socios
         </a>
         <a href="{% url 'contacto' %}" 
            class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'contacto' %}text-harvest-gold{% endif %}">
           Contacto
         </a>
-        <a href="{% url 'applogin:login' %}" 
-          class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
-          Iniciar Sesión
+        {% if es_admin %}
+        <a href="{% url 'applogin:registro' %}" 
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'contacto' %}text-harvest-gold{% endif %}">
+          Agregar Admin
         </a>
+        {% endif %}
+        
+        <!-- Usuario Autenticado o Socio Loggeado -->
+        {% if request.user.is_authenticated or request.session.es_socio_login %}
+          <div class="flex items-center gap-4 pl-6 border-l border-white/30">
+            <div class="text-right">
+              {% if request.session.es_socio_login %}
+                <p class="text-sm font-semibold">{{ request.session.socio_nombre }}</p>
+                <p class="text-xs text-white/70">
+                  <span class="inline-block bg-vine-green text-white px-2 py-1 rounded text-xs font-bold">Socio</span>
+                </p>
+              {% else %}
+                <p class="text-sm font-semibold">{{ request.user.username }}</p>
+                <p class="text-xs text-white/70">
+                  {% if es_admin %}
+                    <span class="inline-block bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">Admin</span>
+                  {% elif es_socio %}
+                    <span class="inline-block bg-vine-green text-white px-2 py-1 rounded text-xs font-bold">Socio</span>
+                  {% else %}
+                    <span class="text-white/70">Sin rol</span>
+                  {% endif %}
+                </p>
+              {% endif %}
+            </div>
+            <a href="{% url 'applogin:salir' %}" 
+               class="bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-red-500 hover:text-white transition text-sm">
+              Salir
+            </a>
+          </div>
+        {% else %}
+          <!-- Usuario No Autenticado -->
+          <a href="{% url 'applogin:iniciar' %}" 
+            class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+            Iniciar Sesión
+          </a>
+        {% endif %}
       </nav>
     </div>
   </div>

@@ -3,6 +3,10 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .models import Rol, UsuarioRol
+from .utils import es_admin, es_socio, obtener_rol_usuario
+from django.contrib.auth.hashers import check_password
+from appsocios.models import Socio
 
 # usuario admin:claus clave:cfm-1..5
 
@@ -15,14 +19,47 @@ def iniciar(request):
     if request.method=='GET':
         return render(request,"applogin/iniciar.html",{ 'form': AuthenticationForm() })
     else:
-        name = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(username=name, password=password)
-        if user is None:
-            return render(request, "applogin/iniciar.html",{ 'form':AuthenticationForm(), 'mensaje':'Debe ingresar un usuario o clave correcta'})
-        else:
+        username = request.POST.get("username", "")
+        password = request.POST.get("password", "")
+        
+        if not username or not password:
+            return render(request, "applogin/iniciar.html",{ 
+                'form':AuthenticationForm(), 
+                'mensaje':'Por favor completa todos los campos'
+            })
+        
+        # Intenta primero como Admin (Usuario Django)
+        user = authenticate(username=username, password=password)
+        if user is not None:
             login(request, user)
             return redirect("home")
+        
+        # Si falla, intenta como Socio (RUT + contraseña)
+        try:
+            # Limpiar RUT: remover puntos, guiones y convertir a mayúsculas
+            rut_limpio = username.upper().replace('.', '').replace('-', '')
+            socio = Socio.objects.get(socio_rut=rut_limpio)
+            
+            # Verificar contraseña
+            if socio.socio_contraseña and check_password(password, socio.socio_contraseña):
+                # Crear sesión para el socio
+                request.session['socio_id'] = socio.socio_id
+                request.session['socio_nombre'] = f"{socio.socio_nombre} {socio.socio_apellido_paterno}"
+                request.session['socio_rut'] = socio.socio_rut
+                request.session['es_socio_login'] = True
+                
+                return redirect("appsocios:lista_empresas")
+            else:
+                return render(request, "applogin/iniciar.html",{ 
+                    'form':AuthenticationForm(), 
+                    'mensaje':'Usuario/RUT o contraseña incorrectos'
+                })
+        except Socio.DoesNotExist:
+            # Si tampoco es socio, mostrar error genérico
+            return render(request, "applogin/iniciar.html",{ 
+                'form':AuthenticationForm(), 
+                'mensaje':'Usuario/RUT o contraseña incorrectos'
+            })
 
 
 def registro(request):  
@@ -34,14 +71,38 @@ def registro(request):
         else:
             name = request.POST["username"]
             password = request.POST["password1"]
+            # Validar si el nombre de usuario ya existe
+            if User.objects.filter(username=name).exists():
+                return render(request, "applogin/registro.html",{ 'form' : UserCreationForm(), 'mensaje': "El nombre de usuario ya está en uso. Elige otro." })
             user = User.objects.create_user(username=name, password=password)
             user.save()
-            return render(request, "applogin/registro.html",{ 'form' : UserCreationForm(), 'mensaje': "Usuario registrado"})
+            
+            # Asignar rol de administrador por defecto
+            rol_admin, _ = Rol.objects.get_or_create(nombre='admin', defaults={'descripcion': 'Administrador'})
+            UsuarioRol.objects.create(usuario=user, rol=rol_admin)
+            
+            return render(request, "applogin/registro.html",{ 'form' : UserCreationForm(), 'mensaje': "Usuario registrado exitosamente. Ya puedes iniciar sesión."})
         
 @login_required    
-def home(request):   
-        return render(request, "home.html")    
+def home(request):
+    context = {
+        'es_admin': es_admin(request.user),
+        'es_socio': es_socio(request.user),
+        'rol_usuario': obtener_rol_usuario(request.user),
+    }
+    return render(request, "inicio.html", context)        
 
 def salir(request):
+    # Limpiar sesión de socio si existe
+    if 'es_socio_login' in request.session:
+        del request.session['es_socio_login']
+    if 'socio_id' in request.session:
+        del request.session['socio_id']
+    if 'socio_nombre' in request.session:
+        del request.session['socio_nombre']
+    if 'socio_rut' in request.session:
+        del request.session['socio_rut']
+    
+    # Logout del usuario Django
     logout(request)
     return redirect('home')

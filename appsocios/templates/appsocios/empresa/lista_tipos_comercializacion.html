@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Tipos de Comercialización - Descubre Curicó{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Lista de Tipos de Comercialización</h1>
+        <a href="{% url 'appsocios:crear_tipo_comercializacion' %}" class="btn-primary">
+            <i data-lucide="plus-circle"></i>
+            Crear Nuevo Tipo
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success mb-4">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="bg-white border-2 border-barrel-brown/20 rounded-lg p-8">
+        <table class="w-full">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-2">Nombre del Tipo de Comercialización</th>
+                    <th class="text-right py-2">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tipo in tipos %}
+                    <tr class="border-b">
+                        <td class="py-4">{{ tipo.nombre_tipo }}</td>
+                        <td class="py-4 text-right">
+                            <a href="{% url 'appsocios:editar_tipo_comercializacion' tipo.id_tipo %}" class="text-blue-600 hover:underline">Editar</a>
+                            <a href="{% url 'appsocios:eliminar_tipo_comercializacion' tipo.id_tipo %}" class="text-red-600 hover:underline ml-4">Eliminar</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center py-8">No hay tipos de comercialización creados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

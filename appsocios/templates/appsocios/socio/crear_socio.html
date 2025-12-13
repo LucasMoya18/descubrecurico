@@ -119,6 +119,22 @@
                     
                 </div>
 
+                <!-- Contraseña -->
+                <div class="form-section">
+                    <h2>Seguridad</h2>
+                    <div>
+                        <label for="{{ form.socio_contraseña.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.socio_contraseña.label }} *
+                        </label>
+                        {{ form.socio_contraseña }}
+                            <span class="error-message">{{ form.socio_contraseña.errors.0 }}</span>
+                        
+                        <small style="color: #666; display: block; margin-top: 0.5rem;">
+                            {{ form.socio_contraseña.help_text|safe }}
+                        </small>
+                    </div>
+                </div>
+
                 <!-- Información de Dirección -->
                 <div class="form-section">
                     <h2>Información de Dirección</h2>
@@ -194,4 +210,5 @@
 </div>
 
 <script src="{% static 'js/crear_socio.js' %}"></script>
+<script src="{% static 'js/mostrar_contraseña.js' %}"></script>
 {% endblock %}

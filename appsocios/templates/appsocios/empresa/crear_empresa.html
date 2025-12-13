@@ -51,8 +51,8 @@
             <form method="POST" enctype="multipart/form-data" class="space-y-6">
                 {% csrf_token %}
 
-                <!-- RUN del Socio (solo en creación) -->
-                {% if not es_edicion %}
+                <!-- RUN del Socio (solo en creación y para administradores) -->
+                {% if not es_edicion and es_admin %}
                 <div class="form-section">
                     <h2>Información del Socio</h2>
                     
@@ -68,6 +68,10 @@
                             Ingresa el RUN del socio que registrará esta empresa.
                         </small>
                     </div>
+                </div>
+                {% elif not es_edicion and es_socio %}
+                <div class="form-section">
+                    
                 </div>
                 {% endif %}
 

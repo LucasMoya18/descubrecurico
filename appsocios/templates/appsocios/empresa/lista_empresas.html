@@ -6,25 +6,38 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
   <link rel="stylesheet" href="{% static 'css/lista_empresas.css' %}">
-    <a href="{% url 'appsocios:crear_socio' %}" 
-      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
-      Crear Socio
-    </a>
-
-    <a href="{% url 'appsocios:crear_empresa' %}" 
-      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
-      Crear Empresa
-    </a>
     
-    <a href="{% url 'appsocios:crear_rubro' %}" 
-      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
-      Crear Rubro
-    </a>
+    <!-- Botones visibles solo para administradores -->
+    {% if es_admin %}
+      <a href="{% url 'appsocios:crear_socio' %}" 
+        class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+        Crear Socio
+      </a>
 
-    <a href="{% url 'appsocios:crear_tipo_comercializacion' %}" 
-      class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
-      Crear Tipo de Comercialización
-    </a>
+      <a href="{% url 'appsocios:lista_rubros' %}" 
+        class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+        Crear Rubro
+      </a>
+
+      <a href="{% url 'appsocios:lista_tipos_comercializacion' %}" 
+        class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+        Crear Tipo de Comercialización
+      </a>
+    {% endif %}
+    
+    <!-- Botón visible para administradores y socios -->
+    {% if es_admin or es_socio %}
+      <a href="{% url 'appsocios:crear_empresa' %}" 
+        class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
+        Crear Empresa
+      </a>
+      {% if es_socio %}
+      <a href="{% url 'appsocios:editar_socio' %}" 
+        class="ml-4 bg-vine-green text-white font-semibold px-4 py-2 rounded-full hover:bg-harvest-gold hover:text-burgundy-reserve transition text-sm">
+        Editar Perfil
+      </a>
+      {% endif %}
+    {% endif %}
     
     <!-- Results Count -->
     <div class="mb-6 mt-8">
@@ -64,7 +77,7 @@
             {% if empresa.foto %}
               <img src="{{ empresa.foto.url }}" alt="{{ empresa.nombre }}" class="w-full h-40 object-cover rounded-lg border-2 border-burgundy-reserve">
             {% else %}
-              <img src="{% static 'imagenes/default-empresa.jpg' %}" alt="{{ empresa.nombre }}" class="w-full h-40 object-cover rounded-lg border-2 border-burgundy-reserve">
+              <img src="{% static 'imagenes/default-empresa.jpg' %}" alt="Sin imagen" class="w-full h-40 object-cover rounded-lg border-2 border-burgundy-reserve">
             {% endif %}
           </div>
 
@@ -92,10 +105,12 @@
             
             <!-- Botones -->
             <div class="flex gap-3">
+              {% if es_admin or es_socio and empresa.socio and empresa.socio.socio_id == request.session.socio_id %}
               <a href="{% url 'appsocios:editar_empresa' empresa.id_empresa %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-vine-green text-white hover:bg-[#009030] transition-colors text-sm font-medium">
                 <i data-lucide="edit" class="h-4 w-4"></i>
                 Editar
               </a>
+              {% endif %}
               <button class="como-llegar-btn inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#6e0e0a] text-white hover:bg-[#4a0907] transition-colors text-sm font-medium" 
                       data-id="{{ empresa.id }}"
                       data-nombre="{{ empresa.nombre }}"

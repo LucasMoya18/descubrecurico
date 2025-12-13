@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Crear Rubro - Descubre Curicó{% endblock %}
+{% block title %}{% if es_edicion %}Editar Rubro{% else %}Crear Rubro{% endif %} - Descubre Curicó{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/crear_socio.css' %}">
@@ -9,8 +9,14 @@
 <!-- Hero -->
 <section class="bg-gradient-to-r from-burgundy-reserve to-grape-purple text-white py-16">
   <div class="container mx-auto px-4 text-center">
-    <h1 class="text-4xl md:text-5xl font-bold mb-4">Crear Rubro</h1>
-    <p class="text-xl text-white/90 max-w-2xl mx-auto">Agrega un nuevo rubro para clasificar empresas.</p>
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">{% if es_edicion %}Editar Rubro{% else %}Crear Rubro{% endif %}</h1>
+    <p class="text-xl text-white/90 max-w-2xl mx-auto">
+      {% if es_edicion %}
+        Modifica el nombre del rubro.
+      {% else %}
+        Agrega un nuevo rubro para clasificar empresas.
+      {% endif %}
+    </p>
   </div>
 </section>
 
@@ -31,7 +37,7 @@
           <h2>Datos del Rubro</h2>
           <div>
             <label for="{{ form.nombre_rubro.id_for_label }}">Nombre del Rubro *</label>
-            <input type="text" name="{{ form.nombre_rubro.name }}" id="{{ form.nombre_rubro.id_for_label }}" value="{{ form.nombre_rubro.value|default:'' }}" required>
+            {{ form.nombre_rubro }}
             {% if form.nombre_rubro.errors %}
               <span class="error-message">{{ form.nombre_rubro.errors.0 }}</span>
             {% endif %}
@@ -41,9 +47,9 @@
         <div class="btn-container">
           <button type="submit" class="btn-primary">
             <i data-lucide="check-circle"></i>
-            Crear Rubro
+            {% if es_edicion %}Guardar Cambios{% else %}Crear Rubro{% endif %}
           </button>
-          <a href="{% url 'appsocios:lista_empresas' %}" class="btn-secondary">
+          <a href="{% url 'appsocios:lista_rubros' %}" class="btn-secondary">
             <i data-lucide="x-circle"></i>
             Cancelar
           </a>
@@ -53,5 +59,4 @@
     </div>
   </div>
 </div>
-
 {% endblock %}
