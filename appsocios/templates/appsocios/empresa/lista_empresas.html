@@ -51,12 +51,20 @@
         <input id="buscarEmpresa" type="search" placeholder="Buscar empresa por nombre..." class="w-full px-4 py-2 border-2 rounded-md" />
       </div>
       <div class="flex items-center gap-4">
-        <div id="rubrosList" class="flex gap-2 flex-wrap">
-          <button data-rubro-id="" class="rubro-btn px-3 py-1 rounded-full bg-gray-200 text-sm">Todos</button>
-          {% for rubro in rubros %}
-            <button data-rubro-id="{{ rubro.id_rubro }}" class="rubro-btn px-3 py-1 rounded-full bg-gray-100 text-sm hover:bg-vine-green/90">{{ rubro.nombre_rubro }}</button>
-          {% endfor %}
-        </div>
+        <form method="get" action="{% url 'appsocios:lista_empresas' %}" class="flex items-center gap-2">
+            <select name="rubro" id="rubro" class="w-full md:w-auto px-4 py-2 border-2 rounded-md" onchange="this.form.submit()">
+                <option value="">Seleccionar rubro</option>
+                {% for r in rubros %}
+                    <option value="{{ r.id_rubro }}" {% if rubro_seleccionado|stringformat:"s" == r.id_rubro|stringformat:"s" %}selected{% endif %}>{{ r.nombre_rubro }}</option>
+                {% endfor %}
+            </select>
+            <noscript>
+                <button type="submit" class="px-4 py-2 rounded-md bg-vine-green text-white">Filtrar</button>
+            </noscript>
+            <a href="{% url 'appsocios:lista_empresas' %}" class="p-2.5 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300" title="Limpiar filtro">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </a>
+        </form>
         <div class="flex items-center gap-2">
           <label class="text-sm text-gray-600">Ver por fila:</label>
           <div id="gridControls" class="inline-flex items-center gap-2">

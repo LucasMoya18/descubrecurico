@@ -264,7 +264,13 @@ def crear_empresa(request):
 
 def lista_empresas(request):
     import json
+    
+    rubro_seleccionado = request.GET.get('rubro')
     empresas = Empresa.objects.all()
+
+    if rubro_seleccionado:
+        empresas = empresas.filter(rubro__id_rubro=rubro_seleccionado)
+
     rubros = Rubro.objects.all()
 
     # Convertir empresas a JSON para pasar a JavaScript
@@ -274,6 +280,7 @@ def lista_empresas(request):
             'id': emp.id_empresa,
             'nombre': emp.nombre,
             'rubro': emp.rubro.nombre_rubro if emp.rubro else 'Sin rubro',
+            'rubro_id': emp.rubro.id_rubro if emp.rubro else '',
             'telefono': emp.telefono or 'N/A',
             'correo': emp.correo or 'N/A',
             'direccion': emp.direccion_completa or emp.calle or 'N/A',
@@ -285,6 +292,7 @@ def lista_empresas(request):
     return render(request, 'appsocios/empresa/lista_empresas.html', {
         'empresas': empresas,
         'rubros': rubros,
+        'rubro_seleccionado': rubro_seleccionado,
         'empresas_json': json.dumps(empresas_data),
         'es_admin': es_admin(request.user),
         'es_socio': es_socio(request.user, request),
