@@ -7,6 +7,7 @@ from .models import Rol, UsuarioRol
 from .utils import es_admin, es_socio, obtener_rol_usuario
 from django.contrib.auth.hashers import check_password
 from appsocios.models import Socio
+from appadmincontenido.models import Articulo, Noticia, Reportaje
 
 # usuario admin:claus clave:cfm-1..5
 
@@ -83,13 +84,27 @@ def registro(request):
             
             return render(request, "applogin/registro.html",{ 'form' : UserCreationForm(), 'mensaje': "Usuario registrado exitosamente. Ya puedes iniciar sesión."})
         
-@login_required    
 def home(request):
-    context = {
-        'es_admin': es_admin(request.user),
-        'es_socio': es_socio(request.user),
-        'rol_usuario': obtener_rol_usuario(request.user),
-    }
+    context = {}
+    if request.user.is_authenticated:
+        context = {
+            'es_admin': es_admin(request.user),
+            'es_socio': es_socio(request.user),
+            'rol_usuario': obtener_rol_usuario(request.user),
+        }
+    
+    # Obtener contenido reciente (Artículos, Noticias, Reportajes)
+    articulos = list(Articulo.objects.all())
+    noticias = list(Noticia.objects.all())
+    reportajes = list(Reportaje.objects.all())
+    
+    # Combinar y ordenar por fecha de publicación (más reciente primero)
+    contenido_total = articulos + noticias + reportajes
+    contenido_total.sort(key=lambda x: x.publicado_en, reverse=True)
+    
+    # Pasar solo los 3 primeros al template
+    context['contenido_destacado'] = contenido_total[:3]
+    
     return render(request, "inicio.html", context)        
 
 def salir(request):

@@ -9,6 +9,7 @@ class Command(BaseCommand):
         roles_data = [
             {'nombre': 'admin', 'descripcion': 'Administrador del sistema'},
             {'nombre': 'socio', 'descripcion': 'Socio del gremio'},
+            {'nombre': 'empresa', 'descripcion': 'Empresa del gremio'}
         ]
         
         for rol_data in roles_data:

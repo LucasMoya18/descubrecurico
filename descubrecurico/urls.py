@@ -19,9 +19,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from applogin import views as applogin_views
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='inicio.html'), name='home'),
+    path('', applogin_views.home, name='home'),
     path('contacto/', TemplateView.as_view(template_name='contacto.html'), name='contacto'),
     path('admin/', admin.site.urls),
     path('contenido/', include('appadmincontenido.urls')),

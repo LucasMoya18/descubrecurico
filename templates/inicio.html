@@ -67,17 +67,59 @@
   </div>
 </section>
 
-<!-- Incluir el JS que maneja los artículos -->
-<script src="{% static 'js/articulos.js' %}"></script>
+
 
 <!-- SECCIÓN DE ARTÍCULOS DESTACADOS -->
 <section class="py-20 bg-vineyard-beige">
   <div class="container mx-auto px-6 lg:px-10">
     <h2 class="text-3xl font-bold text-burgundy-reserve mb-6">Últimas Noticias Destacadas</h2>
 
-    <!-- Contenedor para artículo destacado -->
-    <div id="featuredArticleContainer" class="bg-ocean-blue p-8 rounded-3xl shadow-lg text-white">
-      <!-- Se llenará con el artículo destacado desde JS -->
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {% for item in contenido_destacado %}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 flex flex-col h-full">
+            <!-- Imagen -->
+            <div class="relative h-48">
+                <a href="{{ item.get_absolute_url }}">
+                    {% if item.portada %}
+                        <img src="{{ item.portada.url }}" alt="{{ item.titulo }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-400">Sin imagen</span>
+                        </div>
+                    {% endif %}
+                </a>
+                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-burgundy-reserve shadow-sm">
+                    {{ item.get_type }}
+                </div>
+            </div>
+            
+            <!-- Contenido -->
+            <div class="p-6 flex flex-col flex-grow">
+                <div class="text-sm text-gray-500 mb-2 flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    {{ item.publicado_en|date:"d M, Y" }}
+                </div>
+                
+                <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                    <a href="{{ item.get_absolute_url }}" class="hover:text-vine-green transition">
+                        {{ item.titulo }}
+                    </a>
+                </h3>
+                
+                <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-grow">
+                    {{ item.resumen }}
+                </p>
+                
+                <a href="{{ item.get_absolute_url }}" class="inline-flex items-center text-vine-green font-semibold hover:underline mt-auto">
+                    Leer más <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                </a>
+            </div>
+        </div>
+      {% empty %}
+        <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm">
+            <p class="text-gray-500 text-lg">No hay noticias recientes para mostrar.</p>
+        </div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -126,9 +168,3 @@
   </div>
 </section>
 {% endblock %}
-
-
-
-
-
-

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
+from applogin.decorators import solo_admin, solo_socio
 from .models import Evento, Articulo, Categoria, Actividad, Noticia, Reportaje, BloqueArticulo, BloqueNoticia, BloqueReportaje
 from .forms import (
     ArticuloForm, 
@@ -107,6 +108,7 @@ def _get_formset_for_tipo(tipo):
     }
     return formset_map.get(tipo, BloqueArticuloFormSet)
 
+@solo_admin
 def articulo_crear(request, tipo):
     model_map = {
         "articulo": Articulo,
@@ -142,6 +144,8 @@ def articulo_crear(request, tipo):
         "tipo": tipo.capitalize()
     })
 
+
+@solo_admin
 def articulo_editar(request, slug, tipo):
     model_map = {
         "articulo": Articulo,
@@ -182,6 +186,7 @@ def articulo_editar(request, slug, tipo):
         "es_edicion": True,
     })
 
+@solo_admin
 def articulo_eliminar(request, slug, tipo):
     model_map = {
         "articulo": Articulo,
@@ -227,6 +232,7 @@ def eventos(request):
         "siguiente_item": siguiente_item,
     })
 
+@solo_admin
 def evento_crear(request):
     if request.method == "POST":
         form = EventoActividadForm(request.POST, tipo="evento")
@@ -246,6 +252,7 @@ def evento_crear(request):
         "accion": "Crear Evento"
     })
 
+@solo_admin
 def actividad_crear(request):
     if request.method == "POST":
         form = EventoActividadForm(request.POST, tipo="actividad")
@@ -265,7 +272,7 @@ def actividad_crear(request):
         "accion": "Crear Actividad"
     })
 
-
+@solo_admin
 def evento_editar(request, slug):
     evento = get_object_or_404(Evento, slug=slug)
     if request.method == "POST":
@@ -285,6 +292,7 @@ def evento_editar(request, slug):
         "es_edicion": True
     })
 
+@solo_admin
 def evento_eliminar(request, slug):
     evento = get_object_or_404(Evento, slug=slug)
     if request.method == "POST":
@@ -296,6 +304,7 @@ def evento_eliminar(request, slug):
         "accion": "Eliminar Evento"
     })
 
+@solo_admin
 def actividad_editar(request, slug):
     actividad = get_object_or_404(Actividad, slug=slug)
     if request.method == "POST":
@@ -315,6 +324,7 @@ def actividad_editar(request, slug):
         "es_edicion": True
     })
 
+@solo_admin
 def actividad_eliminar(request, slug):
     actividad = get_object_or_404(Actividad, slug=slug)
     if request.method == "POST":
