@@ -119,6 +119,7 @@ class Socio(models.Model):
     socio_region = models.ForeignKey(Region, on_delete=models.PROTECT, verbose_name='Región')
     socio_estado = models.CharField(max_length=50, verbose_name='Estado')
     socio_contraseña = models.CharField(max_length=128, verbose_name='Contraseña', blank=True, null=True)
+    socio_fecha_creacion = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         db_table = 'Socio'

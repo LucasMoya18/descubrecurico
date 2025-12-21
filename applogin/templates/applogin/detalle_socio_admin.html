@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalle de Socio - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 lg:px-10 py-12">
+  <div class="mb-8">
+    <a href="{% url 'applogin:lista_socios_admin' %}" class="inline-flex items-center gap-2 text-vine-green hover:underline mb-4">
+      <i data-lucide="arrow-left" class="h-4 w-4"></i>
+      Volver a lista de socios
+    </a>
+    <h1 class="text-4xl font-bold text-burgundy-reserve">{{ socio.socio_nombre }} {{ socio.socio_apellido_paterno }}</h1>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8 mb-12">
+    <!-- Información del Socio -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-burgundy-reserve mb-6">Información Personal</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-600">RUT</p>
+          <p class="text-lg font-semibold text-burgundy-reserve">{{ socio.socio_rut }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Nombre Completo</p>
+          <p class="text-lg font-semibold">{{ socio.socio_nombre }} {{ socio.socio_apellido_paterno }} {{ socio.socio_apellido_materno }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Email</p>
+          <p class="text-lg font-semibold text-blue-600">{{ socio.socio_correo }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Teléfono Celular</p>
+          <p class="text-lg font-semibold">{{ socio.socio_celular }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Teléfono Fijo</p>
+          <p class="text-lg font-semibold">{{ socio.socio_fijo }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Dirección</p>
+          <p class="text-lg font-semibold">{{ socio.socio_direccion }} {{ socio.socio_numero }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Comuna</p>
+          <p class="text-lg font-semibold">{{ socio.socio_comuna }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Región</p>
+          <p class="text-lg font-semibold">{{ socio.socio_region }}</p>
+        </div>
+        
+        <div>
+          <p class="text-sm text-gray-600">Estado</p>
+          <p class="inline-block bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">{{ socio.socio_estado }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="bg-gradient-to-br from-harvest-gold/10 to-burgundy-reserve/10 rounded-lg p-8">
+      <h2 class="text-2xl font-bold text-burgundy-reserve mb-6">Estadísticas</h2>
+      
+      <div class="space-y-6">
+        <div class="bg-white rounded-lg p-6 border-2 border-harvest-gold">
+          <p class="text-gray-600 text-sm mb-2">Empresas Asociadas</p>
+          <p class="text-5xl font-bold text-harvest-gold">{{ empresas.count }}</p>
+          <p class="text-gray-500 text-xs mt-2">negocio{% if empresas.count != 1 %}s{% endif %} registrado{% if empresas.count != 1 %}s{% endif %}</p>
+        </div>
+        
+        <div class="bg-white rounded-lg p-6">
+          <p class="text-gray-600 text-sm mb-4">Datos de Registro</p>
+          <ul class="space-y-2 text-sm">
+            <li class="flex justify-between">
+              <span class="text-gray-600">Miembro desde:</span>
+              <span class="font-semibold">
+                {% if socio.socio_fecha_creacion %}
+                  {{ socio.socio_fecha_creacion|date:"d \d\e M, Y" }}
+                {% else %}
+                  -
+                {% endif %}
+              </span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">Teléfono registrado:</span>
+              <span class="font-semibold">
+                {% if socio.socio_celular or socio.socio_fijo %}Sí{% else %}No{% endif %}
+              </span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">Email verificado:</span>
+              <span class="font-semibold">Sí</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empresas del Socio -->
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-burgundy-reserve mb-6">Empresas Registradas</h2>
+    
+    {% if empresas %}
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-6 py-3 text-left font-semibold text-gray-700">Nombre</th>
+            <th class="px-6 py-3 text-left font-semibold text-gray-700">RUT</th>
+            <th class="px-6 py-3 text-left font-semibold text-gray-700">Rubro</th>
+            <th class="px-6 py-3 text-left font-semibold text-gray-700">Teléfono</th>
+            <th class="px-6 py-3 text-left font-semibold text-gray-700">Email</th>
+            <th class="px-6 py-3 text-center font-semibold text-gray-700">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for empresa in empresas %}
+          <tr class="border-b hover:bg-gray-50 transition">
+            <td class="px-6 py-4 font-semibold">{{ empresa.nombre }}</td>
+            <td class="px-6 py-4 text-sm">{{ empresa.rut }}</td>
+            <td class="px-6 py-4 text-sm">
+              {% if empresa.rubro %}
+                <span class="inline-block bg-blue-200 text-blue-800 px-2 py-1 rounded text-xs">{{ empresa.rubro.nombre_rubro }}</span>
+              {% else %}
+                <span class="text-gray-400">-</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 text-sm">{{ empresa.telefono }}</td>
+            <td class="px-6 py-4 text-sm text-blue-600">{{ empresa.correo }}</td>
+            <td class="px-6 py-4 text-center">
+              <a href="{% url 'appsocios:editar_empresa' empresa.id_empresa %}" class="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-vine-green text-white hover:bg-[#007a2a] transition text-xs">
+                <i data-lucide="edit" class="h-3 w-3"></i>
+                Editar
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-12 bg-gray-50 rounded-lg">
+      <p class="text-gray-500 text-lg">Este socio no tiene empresas registradas</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="mt-8">
+    <a href="{% url 'applogin:lista_socios_admin' %}" class="inline-flex items-center gap-2 px-6 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 transition">
+      <i data-lucide="arrow-left" class="h-4 w-4"></i>
+      Volver a lista
+    </a>
+  </div>
+</div>
+{% endblock %}
