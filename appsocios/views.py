@@ -266,7 +266,12 @@ def lista_empresas(request):
     import json
     
     rubro_seleccionado = request.GET.get('rubro')
-    empresas = Empresa.objects.all()
+    empresas = Empresa.objects.filter(
+        estado_pago='pagado',
+        encuesta_respondida=True,
+        estado_solicitud='aprobada',
+        activo=True
+    )
 
     if rubro_seleccionado:
         empresas = empresas.filter(rubro__id_rubro=rubro_seleccionado)
@@ -318,6 +323,9 @@ def encuesta(request):
         form = EncuestaForm(request.POST, instance=encuesta)
         if form.is_valid():
             form.save()
+            # Actualizar estado de encuesta en la empresa
+            empresa.encuesta_respondida = True
+            empresa.save()
             # Limpiar la sesión
             if 'empresa_id' in request.session:
                 del request.session['empresa_id']
@@ -336,6 +344,33 @@ def encuesta(request):
         'empresa': empresa,
     }
     return render(request, 'appsocios/socio/encuesta.html', context)
+
+def continuar_encuesta(request, id_empresa):
+    empresa = get_object_or_404(Empresa, id_empresa=id_empresa)
+    
+    # Verificación de permisos
+    socio_id_session = request.session.get('socio_id')
+    permiso = False
+    
+    if socio_id_session and empresa.socio and empresa.socio.socio_id == socio_id_session:
+        permiso = True
+    elif request.user.is_authenticated:
+        if es_admin(request.user):
+            permiso = True
+        elif es_socio(request.user):
+            try:
+                socio = Socio.objects.get(usuario=request.user)
+                if empresa.socio and empresa.socio.socio_id == socio.socio_id:
+                    permiso = True
+            except Socio.DoesNotExist:
+                pass
+    
+    if not permiso:
+        messages.error(request, "No tienes permiso para acceder a esta encuesta.")
+        return redirect('appdashboard:home')
+
+    request.session['empresa_id'] = empresa.id_empresa
+    return redirect('appsocios:encuesta')
 
 def editar_empresa(request, id_empresa):
     empresa = get_object_or_404(Empresa, id_empresa=id_empresa)

@@ -71,8 +71,17 @@
             <div class="grid gap-4">
               {% for empresa in empresas %}
               <div class="flex flex-col md:flex-row items-center gap-4 p-4 border border-gray-200 rounded-xl hover:shadow-md transition bg-gray-50/50">
-                <!-- Imagen -->
-                <div class="w-full md:w-24 h-24 flex-shrink-0">
+                <!-- Imagen con Tooltip de Estado -->
+                <div class="w-full md:w-24 h-24 flex-shrink-0 relative group cursor-help"
+                     {% if not empresa.activo or empresa.estado_pago != 'pagado' or not empresa.encuesta_respondida or empresa.estado_solicitud != 'aprobada' %}
+                     title="Empresa NO Visible por:&#10;{% if empresa.estado_solicitud != 'aprobada' %}- Solicitud: {{ empresa.get_estado_solicitud_display }}&#10;{% endif %}{% if empresa.estado_pago != 'pagado' %}- Pago pendiente&#10;{% endif %}{% if not empresa.encuesta_respondida %}- Encuesta pendiente&#10;{% endif %}{% if not empresa.activo %}- Desactivada manualmente{% endif %}"
+                     {% else %}
+                     title="Empresa Visible y Activa"
+                     {% endif %}>
+                  
+                  <!-- Indicador visual sobre la imagen -->
+                  <div class="absolute top-0 right-0 w-4 h-4 rounded-full border-2 border-white {% if empresa.activo and empresa.estado_pago == 'pagado' and empresa.encuesta_respondida and empresa.estado_solicitud == 'aprobada' %}bg-green-500{% else %}bg-red-500{% endif %} z-10"></div>
+
                   {% if empresa.foto %}
                     <img src="{{ empresa.foto.url }}" alt="{{ empresa.nombre }}" class="w-full h-full object-cover rounded-lg border border-gray-200">
                   {% else %}
@@ -87,10 +96,36 @@
                   <h3 class="font-bold text-lg text-burgundy-reserve">{{ empresa.nombre }}</h3>
                   <p class="text-sm text-gray-600">{{ empresa.rubro.nombre_rubro|default:"Sin rubro" }}</p>
                   <p class="text-xs text-gray-500 mt-1">{{ empresa.direccion_completa|default:empresa.calle }}</p>
+                  
+                  <!-- Badges de Estado -->
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    {% if empresa.activo and empresa.estado_pago == 'pagado' and empresa.encuesta_respondida and empresa.estado_solicitud == 'aprobada' %}
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                        Visible al público
+                      </span>
+                    {% else %}
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                        No visible
+                      </span>
+                    {% endif %}
+                    
+                    {% if not empresa.encuesta_respondida %}
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 animate-pulse">
+                        Encuesta pendiente
+                      </span>
+                    {% endif %}
+                  </div>
                 </div>
 
                 <!-- Acciones -->
-                <div class="flex gap-2">
+                <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                  {% if not empresa.encuesta_respondida %}
+                  <a href="{% url 'appsocios:continuar_encuesta' empresa.id_empresa %}" class="inline-flex justify-center items-center gap-1 px-4 py-2 rounded-lg bg-harvest-gold text-burgundy-reserve hover:bg-yellow-500 transition text-sm font-bold shadow-sm">
+                    <i data-lucide="clipboard-list" class="h-4 w-4"></i>
+                    Responder Encuesta
+                  </a>
+                  {% endif %}
+                  
                   <a href="{% url 'appsocios:editar_empresa' empresa.id_empresa %}" class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-vine-green text-white hover:bg-[#007a2a] transition text-sm font-medium">
                     <i data-lucide="edit-2" class="h-4 w-4"></i>
                     Editar

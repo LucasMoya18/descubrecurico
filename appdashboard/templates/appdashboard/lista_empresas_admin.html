@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Empresas - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 lg:px-10 py-12">
+  <div class="mb-8 flex justify-between items-end">
+    <div>
+      <h1 class="text-4xl font-bold text-burgundy-reserve mb-2">Gestión de Empresas</h1>
+      <p class="text-gray-600">Total registradas: <span class="font-semibold" id="totalCount">{{ empresas.count }}</span></p>
+    </div>
+    <a href="{% url 'appsocios:crear_empresa' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-harvest-gold text-burgundy-reserve font-bold hover:bg-vine-green hover:text-white transition shadow-sm">
+      <i data-lucide="plus" class="h-4 w-4"></i>
+      Nueva Empresa
+    </a>
+  </div>
+
+  <!-- Filtros -->
+  <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+    <form id="filterForm" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+      
+      <!-- Filtro Solicitud -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 mb-1">Estado Solicitud</label>
+        <select name="estado_solicitud" class="w-full text-sm border-gray-300 rounded-md focus:ring-burgundy-reserve focus:border-burgundy-reserve">
+          <option value="">Todos</option>
+          <option value="pendiente" {% if filtro_solicitud == 'pendiente' %}selected{% endif %}>Pendiente</option>
+          <option value="aprobada" {% if filtro_solicitud == 'aprobada' %}selected{% endif %}>Aprobada</option>
+          <option value="rechazada" {% if filtro_solicitud == 'rechazada' %}selected{% endif %}>Rechazada</option>
+        </select>
+      </div>
+
+      <!-- Filtro Pago -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 mb-1">Estado Pago</label>
+        <select name="estado_pago" class="w-full text-sm border-gray-300 rounded-md focus:ring-burgundy-reserve focus:border-burgundy-reserve">
+          <option value="">Todos</option>
+          <option value="pagado" {% if filtro_pago == 'pagado' %}selected{% endif %}>Pagado</option>
+          <option value="pendiente" {% if filtro_pago == 'pendiente' %}selected{% endif %}>Pendiente</option>
+        </select>
+      </div>
+
+      <!-- Filtro Encuesta -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 mb-1">Encuesta</label>
+        <select name="encuesta_respondida" class="w-full text-sm border-gray-300 rounded-md focus:ring-burgundy-reserve focus:border-burgundy-reserve">
+          <option value="">Todos</option>
+          <option value="si" {% if filtro_encuesta == 'si' %}selected{% endif %}>Respondida</option>
+          <option value="no" {% if filtro_encuesta == 'no' %}selected{% endif %}>Pendiente</option>
+        </select>
+      </div>
+
+      <!-- Filtro Activo -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 mb-1">Visibilidad</label>
+        <select name="activo" class="w-full text-sm border-gray-300 rounded-md focus:ring-burgundy-reserve focus:border-burgundy-reserve">
+          <option value="">Todos</option>
+          <option value="si" {% if filtro_activo == 'si' %}selected{% endif %}>Activa</option>
+          <option value="no" {% if filtro_activo == 'no' %}selected{% endif %}>Inactiva</option>
+        </select>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-2">
+        <button type="submit" class="px-4 py-2 bg-burgundy-reserve text-white text-sm font-medium rounded-md hover:bg-[#6e0e0a] transition w-full">
+          Filtrar
+        </button>
+        <a href="{% url 'appdashboard:lista_empresas_admin' %}" class="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300 transition text-center w-full">
+          Limpiar
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full whitespace-nowrap">
+        <thead>
+          <tr class="bg-burgundy-reserve text-white text-sm uppercase tracking-wider">
+            <th class="px-6 py-4 text-left">Empresa</th>
+            <th class="px-6 py-4 text-left">Socio</th>
+            <th class="px-6 py-4 text-center">Estados</th>
+            <th class="px-6 py-4 text-center">Activa</th>
+            <th class="px-6 py-4 text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200" id="empresasTableBody">
+          {% include 'appdashboard/partials/lista_empresas_rows.html' %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <a href="{% url 'appdashboard:home' %}" class="inline-flex items-center gap-2 px-6 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 transition">
+      <i data-lucide="arrow-left" class="h-4 w-4"></i>
+      Volver al Dashboard
+    </a>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('filterForm');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+        
+        fetch(`${window.location.pathname}?${params.toString()}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('empresasTableBody').innerHTML = data.html;
+            document.getElementById('totalCount').textContent = data.count;
+            // Re-inicializar iconos de Lucide si es necesario
+            if (window.lucide) lucide.createIcons();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+</script>
+{% endblock %}

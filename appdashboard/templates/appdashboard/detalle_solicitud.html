@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestionar Solicitud - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 lg:px-10 py-12">
+  <div class="mb-8">
+    <a href="{% url 'appdashboard:lista_solicitudes' %}" class="inline-flex items-center gap-2 text-vine-green hover:underline mb-4">
+      <i data-lucide="arrow-left" class="h-4 w-4"></i>
+      Volver a solicitudes
+    </a>
+    <h1 class="text-3xl font-bold text-burgundy-reserve">Gestionar Solicitud: {{ empresa.nombre }}</h1>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    
+    <!-- Columna Izquierda: Detalles -->
+    <div class="lg:col-span-2 space-y-6">
+      
+      <!-- Datos Empresa -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Datos de la Empresa</h2>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="block text-gray-500">RUT</span>
+            <span class="font-medium">{{ empresa.rut|default:"-" }}</span>
+          </div>
+          <div>
+            <span class="block text-gray-500">Rubro</span>
+            <span class="font-medium">{{ empresa.rubro.nombre_rubro|default:"-" }}</span>
+          </div>
+          <div>
+            <span class="block text-gray-500">Teléfono</span>
+            <span class="font-medium">{{ empresa.telefono|default:"-" }}</span>
+          </div>
+          <div>
+            <span class="block text-gray-500">Email</span>
+            <span class="font-medium">{{ empresa.correo|default:"-" }}</span>
+          </div>
+          <div class="md:col-span-2">
+            <span class="block text-gray-500">Dirección</span>
+            <span class="font-medium">{{ empresa.direccion_completa|default:empresa.calle }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos Socio -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Datos del Socio Solicitante</h2>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="block text-gray-500">Nombre</span>
+            <span class="font-medium">{{ empresa.socio.socio_nombre }} {{ empresa.socio.socio_apellido_paterno }}</span>
+          </div>
+          <div>
+            <span class="block text-gray-500">RUT</span>
+            <span class="font-medium">{{ empresa.socio.socio_rut }}</span>
+          </div>
+          <div>
+            <span class="block text-gray-500">Teléfono</span>
+            <span class="font-medium">{{ empresa.socio.socio_celular }}</span>
+          </div>
+          <div>
+            <span class="block text-gray-500">Email</span>
+            <span class="font-medium">{{ empresa.socio.socio_correo }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos Encuesta -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Estado de Encuesta</h2>
+        {% if empresa.encuesta_respondida %}
+          <div class="bg-green-50 border border-green-200 rounded-md p-4 flex items-start gap-3">
+            <i data-lucide="check-circle" class="w-6 h-6 text-green-600 mt-0.5"></i>
+            <div>
+              <h3 class="font-semibold text-green-800">Encuesta Completada</h3>
+              <p class="text-sm text-green-700 mt-1">El socio ha respondido la encuesta de ingreso.</p>
+              {% if empresa.encuesta %}
+              <div class="mt-4 space-y-6 text-sm text-gray-600 bg-white p-6 rounded border border-green-100 shadow-sm">
+                 
+                 <!-- Pregunta 1 -->
+                 <div>
+                    <p class="font-bold text-gray-800 mb-2">¿Ofrece descuento por comercialización?</p>
+                    <div>
+                        {% if empresa.encuesta.pregunta_1_descuento_comercializacion == 'si' %}
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase">Sí</span>
+                        {% else %}
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase">No</span>
+                        {% endif %}
+                    </div>
+                 </div>
+
+                 {% if empresa.encuesta.pregunta_1_descuento_comercializacion == 'si' %}
+                 <!-- Pregunta 2 -->
+                 <div>
+                    <p class="font-bold text-gray-800 mb-2">Detalle del descuento o beneficio</p>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200 text-gray-700">
+                        {{ empresa.encuesta.pregunta_2_tipo_descuento|default:"No especificado" }}
+                    </div>
+                 </div>
+
+                 <!-- Pregunta 2b -->
+                 <div>
+                    <p class="font-bold text-gray-800 mb-2">Porcentaje de descuento</p>
+                    <div class="text-gray-700 font-medium">
+                        {% if empresa.encuesta.pregunta_2_porcentaje %}
+                            <span class="text-green-600 text-lg">{{ empresa.encuesta.pregunta_2_porcentaje }}%</span>
+                        {% else %}
+                            No especificado
+                        {% endif %}
+                    </div>
+                 </div>
+                 {% endif %}
+
+                 <!-- Pregunta 3 -->
+                 <div>
+                    <p class="font-bold text-gray-800 mb-2">Aporte de valor al gremio y la ciudad</p>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200 italic text-gray-700">
+                        "{{ empresa.encuesta.pregunta_3_valor_empresa|default:"No especificado" }}"
+                    </div>
+                 </div>
+
+                 <!-- Pregunta 4 -->
+                 <div>
+                    <p class="font-bold text-gray-800 mb-2">Empresa de referencia</p>
+                    <div class="flex items-center gap-2 text-gray-700 font-medium">
+                        <i data-lucide="building-2" class="w-4 h-4 text-harvest-gold"></i>
+                        <span>{{ empresa.encuesta.pregunta_4_empresa_referencia|default:"Ninguna" }}</span>
+                    </div>
+                 </div>
+
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          <div class="bg-red-50 border border-red-200 rounded-md p-4 flex items-center gap-3">
+            <i data-lucide="alert-circle" class="w-6 h-6 text-red-600"></i>
+            <div>
+              <h3 class="font-semibold text-red-800">Encuesta Pendiente</h3>
+              <p class="text-sm text-red-700">El socio aún no ha completado la encuesta obligatoria.</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- Columna Derecha: Acciones -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-lg shadow-lg p-6 sticky top-8">
+        <h2 class="text-xl font-bold text-burgundy-reserve mb-6">Gestión de Solicitud</h2>
+        
+        <form method="POST" class="space-y-6">
+          {% csrf_token %}
+          
+          <!-- Estado de Pago -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Estado de Pago</label>
+            <select name="estado_pago" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-burgundy-reserve focus:outline-none">
+              <option value="pendiente" {% if empresa.estado_pago == 'pendiente' %}selected{% endif %}>Pendiente</option>
+              <option value="pagado" {% if empresa.estado_pago == 'pagado' %}selected{% endif %}>Pagado</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Modifica manualmente si se ha recibido el pago.</p>
+          </div>
+
+          <!-- Estado Activo -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Visibilidad de la Empresa</label>
+            <select name="activo" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-burgundy-reserve focus:outline-none">
+              <option value="True" {% if empresa.activo %}selected{% endif %}>Activa (Visible)</option>
+              <option value="False" {% if not empresa.activo %}selected{% endif %}>Inactiva (Oculta)</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Controla si la empresa aparece en el listado público.</p>
+          </div>
+
+          <!-- Estado de Solicitud -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Resolución</label>
+            <div class="space-y-2">
+              <label class="flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50 {% if empresa.estado_solicitud == 'pendiente' %}border-blue-500 bg-blue-50{% endif %}">
+                <input type="radio" name="estado_solicitud" value="pendiente" class="mr-2" {% if empresa.estado_solicitud == 'pendiente' %}checked{% endif %}>
+                <span>Mantener Pendiente</span>
+              </label>
+              
+              <label class="flex items-center p-3 border rounded-md cursor-pointer hover:bg-green-50 {% if empresa.estado_solicitud == 'aprobada' %}border-green-500 bg-green-50{% endif %}">
+                <input type="radio" name="estado_solicitud" value="aprobada" class="mr-2" {% if empresa.estado_solicitud == 'aprobada' %}checked{% endif %}>
+                <span class="font-semibold text-green-700">Aprobar Solicitud</span>
+              </label>
+              
+              <label class="flex items-center p-3 border rounded-md cursor-pointer hover:bg-red-50 {% if empresa.estado_solicitud == 'rechazada' %}border-red-500 bg-red-50{% endif %}">
+                <input type="radio" name="estado_solicitud" value="rechazada" class="mr-2" {% if empresa.estado_solicitud == 'rechazada' %}checked{% endif %}>
+                <span class="font-semibold text-red-700">Rechazar Solicitud</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t">
+            <button type="submit" class="w-full py-3 px-4 bg-burgundy-reserve text-white font-bold rounded-md hover:bg-[#6e0e0a] transition shadow-md flex justify-center items-center gap-2">
+              <i data-lucide="save" class="w-5 h-5"></i>
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

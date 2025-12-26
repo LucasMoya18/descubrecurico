@@ -1,0 +1,79 @@
+{% for empresa in empresas %}
+<tr class="hover:bg-gray-50 transition">
+  <td class="px-6 py-4">
+    <div class="flex items-center gap-3">
+      {% if empresa.foto %}
+        <img src="{{ empresa.foto.url }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+      {% else %}
+        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+          <i data-lucide="image" class="w-5 h-5"></i>
+        </div>
+      {% endif %}
+      <div>
+        <div class="font-semibold text-gray-900">{{ empresa.nombre }}</div>
+        <div class="text-xs text-gray-500">{{ empresa.rubro.nombre_rubro|default:"Sin rubro" }}</div>
+      </div>
+    </div>
+  </td>
+  <td class="px-6 py-4">
+    {% if empresa.socio %}
+      <div class="text-sm font-medium text-gray-900">{{ empresa.socio.socio_nombre }} {{ empresa.socio.socio_apellido_paterno }}</div>
+      <div class="text-xs text-gray-500">{{ empresa.socio.socio_rut }}</div>
+    {% else %}
+      <span class="text-xs text-red-500 font-semibold">Sin socio</span>
+    {% endif %}
+  </td>
+  <td class="px-6 py-4">
+    <div class="flex flex-col gap-1 items-center">
+      <!-- Solicitud -->
+      {% if empresa.estado_solicitud == 'aprobada' %}
+        <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-[10px] font-bold uppercase">Aprobada</span>
+      {% elif empresa.estado_solicitud == 'rechazada' %}
+        <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-bold uppercase">Rechazada</span>
+      {% else %}
+        <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold uppercase">Pendiente</span>
+      {% endif %}
+      
+      <!-- Pago -->
+      {% if empresa.estado_pago == 'pagado' %}
+        <span class="text-[10px] text-green-600 flex items-center gap-1"><i data-lucide="dollar-sign" class="w-3 h-3"></i> Pagado</span>
+      {% else %}
+        <span class="text-[10px] text-orange-600 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> No pagado</span>
+      {% endif %}
+
+      <!-- Encuesta -->
+      {% if empresa.encuesta_respondida %}
+        <span class="text-[10px] text-green-600 flex items-center gap-1"><i data-lucide="clipboard-check" class="w-3 h-3"></i> Encuesta OK</span>
+      {% else %}
+        <span class="text-[10px] text-red-600 flex items-center gap-1"><i data-lucide="clipboard-x" class="w-3 h-3"></i> Sin encuesta</span>
+      {% endif %}
+    </div>
+  </td>
+  <td class="px-6 py-4 text-center">
+    {% if empresa.activo %}
+      <i data-lucide="check-circle-2" class="w-6 h-6 text-green-500 mx-auto"></i>
+    {% else %}
+      <i data-lucide="x-circle" class="w-6 h-6 text-gray-300 mx-auto"></i>
+    {% endif %}
+  </td>
+  <td class="px-6 py-4 text-center">
+    <div class="flex justify-center gap-2">
+      <a href="{% url 'appdashboard:gestionar_solicitud' empresa.id_empresa %}" class="p-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition" title="Gestionar Estados">
+        <i data-lucide="settings-2" class="w-4 h-4"></i>
+      </a>
+      <a href="{% url 'appsocios:editar_empresa' empresa.id_empresa %}" class="p-2 rounded-md bg-yellow-50 text-yellow-600 hover:bg-yellow-100 transition" title="Editar Datos">
+        <i data-lucide="edit" class="w-4 h-4"></i>
+      </a>
+      <a href="{% url 'appdashboard:eliminar_empresa_admin' empresa.id_empresa %}" class="p-2 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition" title="Eliminar">
+        <i data-lucide="trash-2" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+    No hay empresas registradas.
+  </td>
+</tr>
+{% endfor %}

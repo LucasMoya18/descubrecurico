@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 #-- Validador de RUN ---
@@ -168,6 +169,23 @@ class Empresa(models.Model):
         TipoComercializacion, null=True, blank=True, on_delete=models.SET_NULL,
         db_column='tipo_comercializacion_id', related_name='empresas'
     )
+
+    # Nuevos campos para flujo de solicitud
+    ESTADOS_SOLICITUD = [
+        ('pendiente', 'Pendiente'),
+        ('aprobada', 'Aprobada'),
+        ('rechazada', 'Rechazada'),
+    ]
+    ESTADOS_PAGO = [
+        ('pendiente', 'Pendiente'),
+        ('pagado', 'Pagado'),
+    ]
+
+    estado_solicitud = models.CharField(max_length=20, choices=ESTADOS_SOLICITUD, default='pendiente', verbose_name='Estado Solicitud')
+    encuesta_respondida = models.BooleanField(default=False, verbose_name='Encuesta Respondida')
+    estado_pago = models.CharField(max_length=20, choices=ESTADOS_PAGO, default='pendiente', verbose_name='Estado Pago')
+    activo = models.BooleanField(default=False, verbose_name='Activa')
+    fecha_creacion = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'Empresa'

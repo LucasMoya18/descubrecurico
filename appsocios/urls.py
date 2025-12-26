@@ -18,6 +18,7 @@ urlpatterns = [
     path('tipos-comercializacion/editar/<int:id_tipo>/', views.editar_tipo_comercializacion, name='editar_tipo_comercializacion'),
     path('tipos-comercializacion/eliminar/<int:id_tipo>/', views.eliminar_tipo_comercializacion, name='eliminar_tipo_comercializacion'),
     path('encuesta/', views.encuesta, name='encuesta'),
+    path('encuesta/continuar/<int:id_empresa>/', views.continuar_encuesta, name='continuar_encuesta'),
     path('lista-empresas/', views.lista_empresas, name='lista_empresas'),
     path('editar-perfil/', views.editar_socio, name='editar_socio'),
     path('cambiar-contrasena/', views.cambiar_contrasena, name='cambiar_contrasena'),
