@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Socios - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 lg:px-10 py-12">
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold text-burgundy-reserve mb-2">Socios Registrados</h1>
+    <p class="text-gray-600">Total: <span class="font-semibold">{{ socios.count }}</span> socios</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <table class="w-full">
+      <thead>
+        <tr class="bg-burgundy-reserve text-white">
+          <th class="px-6 py-4 text-left">RUT</th>
+          <th class="px-6 py-4 text-left">Nombre</th>
+          <th class="px-6 py-4 text-left">Email</th>
+          <th class="px-6 py-4 text-left">Comuna</th>
+          <th class="px-6 py-4 text-center">Empresas</th>
+          <th class="px-6 py-4 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for socio in socios %}
+        <tr class="border-b hover:bg-gray-50 transition">
+          <td class="px-6 py-4 font-semibold text-burgundy-reserve">{{ socio.socio_rut }}</td>
+          <td class="px-6 py-4">
+            <span class="font-medium">{{ socio.socio_nombre }} {{ socio.socio_apellido_paterno }}</span>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ socio.socio_correo }}</td>
+          <td class="px-6 py-4 text-sm">{{ socio.socio_comuna }}</td>
+          <td class="px-6 py-4 text-center">
+            <span class="inline-block bg-harvest-gold/20 text-harvest-gold font-semibold px-3 py-1 rounded-full text-sm">
+              {{ socio.empresas.count }}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-center">
+            <a href="{% url 'appdashboard:detalle_socio' socio.socio_id %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-vine-green text-white hover:bg-[#007a2a] transition text-sm">
+              <i data-lucide="eye" class="h-4 w-4"></i>
+              Ver detalles
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+            No hay socios registrados
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-8">
+    <a href="{% url 'appdashboard:home' %}" class="inline-flex items-center gap-2 px-6 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 transition">
+      <i data-lucide="arrow-left" class="h-4 w-4"></i>
+      Volver
+    </a>
+  </div>
+</div>
+{% endblock %}

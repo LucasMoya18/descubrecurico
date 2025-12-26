@@ -56,8 +56,12 @@
            class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'contacto' %}text-harvest-gold{% endif %}">
           Agregar Admin
         </a>
-        {% endif %}
         
+        {% endif %}
+        <a href="{% url 'appdashboard:home' %}" 
+           class="text-white hover:text-harvest-gold transition-colors text-sm font-medium {% if request.resolver_match.url_name == 'contacto' %}text-harvest-gold{% endif %}">
+          Dashboard
+        </a>
         <!-- Usuario Autenticado o Socio Loggeado -->
         {% if request.user.is_authenticated or request.session.es_socio_login %}
           <div class="flex items-center gap-4 pl-6 border-l border-white/30">

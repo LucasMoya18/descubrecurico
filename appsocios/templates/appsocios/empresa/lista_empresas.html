@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load l10n %}
 
 {% block title %}Lista de Empresas - Descubre Curicó{% endblock %}
 
@@ -23,20 +24,6 @@
         class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
         Crear Tipo de Comercialización
       </a>
-    {% endif %}
-    
-    <!-- Botón visible para administradores y socios -->
-    {% if es_admin or es_socio %}
-      <a href="{% url 'appsocios:crear_empresa' %}" 
-        class="ml-4 bg-harvest-gold text-burgundy-reserve font-semibold px-4 py-2 rounded-full hover:bg-vine-green hover:text-white transition text-sm">
-        Crear Empresa
-      </a>
-      {% if es_socio %}
-      <a href="{% url 'appsocios:editar_socio' %}" 
-        class="ml-4 bg-vine-green text-white font-semibold px-4 py-2 rounded-full hover:bg-harvest-gold hover:text-burgundy-reserve transition text-sm">
-        Editar Perfil
-      </a>
-      {% endif %}
     {% endif %}
     
     <!-- Results Count -->
@@ -123,8 +110,8 @@
                       data-id="{{ empresa.id }}"
                       data-nombre="{{ empresa.nombre }}"
                       data-direccion="{{ empresa.direccion_completa|default:empresa.calle }}"
-                      data-lat="{{ empresa.latitud|default:-35.0 }}"
-                      data-lng="{{ empresa.longitud|default:-71.2 }}">
+                      data-lat="{{ empresa.latitud|unlocalize|default:-35.0 }}"
+                      data-lng="{{ empresa.longitud|unlocalize|default:-71.2 }}">
                 <i data-lucide="navigation" class="h-4 w-4"></i>
                 Cómo llegar
               </button>

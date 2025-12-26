@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Panel - Descubre Curicó{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-6 lg:px-10">
+    
+    <!-- Encabezado -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-burgundy-reserve">Bienvenido, {{ socio.socio_nombre }}</h1>
+        <p class="text-gray-600">Gestiona tu perfil y tus empresas desde aquí.</p>
+      </div>
+      <div class="flex gap-3">
+        <a href="{% url 'appsocios:editar_socio' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-burgundy-reserve transition shadow-sm font-medium">
+          <i data-lucide="user-cog" class="h-4 w-4"></i>
+          Editar Mis Datos
+        </a>
+        <a href="{% url 'appsocios:crear_empresa' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-harvest-gold text-burgundy-reserve hover:bg-vine-green hover:text-white transition shadow-md font-semibold">
+          <i data-lucide="plus-circle" class="h-5 w-5"></i>
+          Solicitar Nueva Empresa
+        </a>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+      
+      <!-- Tarjeta de Datos del Socio -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-burgundy-reserve">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i data-lucide="user" class="h-5 w-5 text-harvest-gold"></i>
+            Mis Datos
+          </h2>
+          <div class="space-y-3 text-sm">
+            <div>
+              <span class="block text-gray-500 text-xs uppercase tracking-wide">Nombre Completo</span>
+              <span class="font-medium text-gray-900">{{ socio.socio_nombre }} {{ socio.socio_apellido_paterno }} {{ socio.socio_apellido_materno }}</span>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs uppercase tracking-wide">RUT</span>
+              <span class="font-medium text-gray-900">{{ socio.socio_rut }}</span>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs uppercase tracking-wide">Email</span>
+              <span class="font-medium text-blue-600">{{ socio.socio_correo }}</span>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs uppercase tracking-wide">Teléfono</span>
+              <span class="font-medium text-gray-900">{{ socio.socio_celular }}</span>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs uppercase tracking-wide">Dirección</span>
+              <span class="font-medium text-gray-900">{{ socio.socio_direccion }} {{ socio.socio_numero }}, {{ socio.socio_comuna }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Empresas -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <i data-lucide="briefcase" class="h-5 w-5 text-harvest-gold"></i>
+            Mis Empresas Registradas
+          </h2>
+
+          {% if empresas %}
+            <div class="grid gap-4">
+              {% for empresa in empresas %}
+              <div class="flex flex-col md:flex-row items-center gap-4 p-4 border border-gray-200 rounded-xl hover:shadow-md transition bg-gray-50/50">
+                <!-- Imagen -->
+                <div class="w-full md:w-24 h-24 flex-shrink-0">
+                  {% if empresa.foto %}
+                    <img src="{{ empresa.foto.url }}" alt="{{ empresa.nombre }}" class="w-full h-full object-cover rounded-lg border border-gray-200">
+                  {% else %}
+                    <div class="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                      <i data-lucide="image" class="h-8 w-8"></i>
+                    </div>
+                  {% endif %}
+                </div>
+                
+                <!-- Info -->
+                <div class="flex-grow text-center md:text-left">
+                  <h3 class="font-bold text-lg text-burgundy-reserve">{{ empresa.nombre }}</h3>
+                  <p class="text-sm text-gray-600">{{ empresa.rubro.nombre_rubro|default:"Sin rubro" }}</p>
+                  <p class="text-xs text-gray-500 mt-1">{{ empresa.direccion_completa|default:empresa.calle }}</p>
+                </div>
+
+                <!-- Acciones -->
+                <div class="flex gap-2">
+                  <a href="{% url 'appsocios:editar_empresa' empresa.id_empresa %}" class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-vine-green text-white hover:bg-[#007a2a] transition text-sm font-medium">
+                    <i data-lucide="edit-2" class="h-4 w-4"></i>
+                    Editar
+                  </a>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+              <i data-lucide="store" class="h-12 w-12 text-gray-300 mx-auto mb-3"></i>
+              <p class="text-gray-500 font-medium">Aún no has registrado ninguna empresa.</p>
+              <a href="{% url 'appsocios:crear_empresa' %}" class="text-vine-green hover:underline text-sm mt-2 inline-block">¡Registra tu primera empresa ahora!</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

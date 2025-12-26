@@ -143,7 +143,7 @@
                             <select id="id_socio_region" name="socio_region" required>
                                 <option value="">-- Selecciona una región --</option>
                                 {% for region in regions %}
-                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                    <option value="{{ region.id }}" {% if form.data.socio_region == region.id|stringformat:"s" %}selected{% elif not form.data.socio_region and form.instance.comuna.provincia.region.id == region.id %}selected{% endif %}>{{ region.region }}</option>
                                 {% endfor %}
                             </select>
                             {% if form.socio_region.errors %}
@@ -159,7 +159,7 @@
                         <select id="id_socio_comuna" name="socio_comuna" required>
                             <option value="">-- Selecciona una comuna --</option>
                             {% for comuna in comunas %}
-                                <option value="{{ comuna.id }}" data-region-id="{{ comuna.provincia.region.id }}">
+                                <option value="{{ comuna.id }}" data-region-id="{{ comuna.provincia.region.id }}" {% if form.data.socio_comuna == comuna.id|stringformat:"s" %}selected{% elif not form.data.socio_comuna and form.instance.comuna.id == comuna.id %}selected{% endif %}>
                                     {{ comuna.comuna }}
                                 </option>
                             {% endfor %}

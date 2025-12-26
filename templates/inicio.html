@@ -4,59 +4,6 @@
 {% block title %}Inicio - Descubre Curicó{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated and es_admin %}
-<!-- ADMIN PANEL SECTION -->
-<section class="py-16 bg-white border-b border-gray-200">
-  <div class="container mx-auto px-6 lg:px-10">
-    <div class="mb-12 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-burgundy-reserve mb-2">Panel de Administración</h2>
-      <p class="text-gray-600">Bienvenido {{ user.username }}, visualiza el estado del gremio</p>
-    </div>
-
-    <!-- Admin Cards Grid -->
-    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-      
-      <!-- Card: Socios -->
-      <a href="{% url 'applogin:lista_socios_admin' %}" class="group">
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-harvest-gold shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <h3 class="text-gray-700 text-sm font-semibold uppercase tracking-wide mb-2">Total de Socios</h3>
-              <p class="text-5xl font-bold text-harvest-gold">{{ total_socios }}</p>
-            </div>
-            <div class="p-4 bg-harvest-gold/10 rounded-xl group-hover:bg-harvest-gold/20 transition">
-              <i data-lucide="users" class="w-10 h-10 text-harvest-gold"></i>
-            </div>
-          </div>
-          <div class="pt-4 border-t border-harvest-gold/20">
-            <span class="text-gray-600 text-sm group-hover:text-harvest-gold transition font-semibold">Ver detalles →</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Card: Empresas -->
-      <a href="{% url 'appsocios:lista_empresas' %}" class="group">
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-harvest-gold shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <h3 class="text-gray-700 text-sm font-semibold uppercase tracking-wide mb-2">Total de Empresas</h3>
-              <p class="text-5xl font-bold text-harvest-gold">{{ total_empresas }}</p>
-            </div>
-            <div class="p-4 bg-harvest-gold/10 rounded-xl group-hover:bg-harvest-gold/20 transition">
-              <i data-lucide="briefcase" class="w-10 h-10 text-harvest-gold"></i>
-            </div>
-          </div>
-          <div class="pt-4 border-t border-harvest-gold/20">
-            <span class="text-gray-600 text-sm group-hover:text-harvest-gold transition font-semibold">Ver detalles →</span>
-          </div>
-        </div>
-      </a>
-
-    </div>
-  </div>
-</section>
-{% endif %}
-
 <!-- HERO -->
 <section class="relative bg-burgundy-reserve text-white pt-[100px] pb-24">
   <div class="container mx-auto px-6 lg:px-10">

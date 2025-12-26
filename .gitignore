@@ -2,3 +2,7 @@
 .env
 descubrecurico/settings.py
 media/articulos/
+
+appdashboard/static/imagenes/
+appadmincontenido/static/imagenes/
+appsocios/static/imagenes/

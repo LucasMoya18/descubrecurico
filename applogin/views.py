@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Rol, UsuarioRol
 from .utils import es_admin, es_socio, obtener_rol_usuario
 from django.contrib.auth.hashers import check_password
-from appsocios.models import Socio, Empresa
+from appsocios.models import Socio
 from appadmincontenido.models import Articulo, Noticia, Reportaje
 
 # usuario admin:claus clave:cfm-1..5
@@ -49,7 +49,7 @@ def iniciar(request):
                 request.session['socio_rut'] = socio.socio_rut
                 request.session['es_socio_login'] = True
                 
-                return redirect("appsocios:lista_empresas")
+                return redirect("appdashboard:home")
             else:
                 return render(request, "applogin/iniciar.html",{ 
                     'form':AuthenticationForm(), 
@@ -92,11 +92,6 @@ def home(request):
             'es_socio': es_socio(request.user),
             'rol_usuario': obtener_rol_usuario(request.user),
         }
-        
-        # Si es admin, agregar estadísticas
-        if es_admin(request.user):
-            context['total_socios'] = Socio.objects.count()
-            context['total_empresas'] = Empresa.objects.count()
     
     # Obtener contenido reciente (Artículos, Noticias, Reportajes)
     articulos = list(Articulo.objects.all())
@@ -126,36 +121,3 @@ def salir(request):
     # Logout del usuario Django
     logout(request)
     return redirect('home')
-
-
-@login_required(login_url='applogin:iniciar')
-def lista_socios_admin(request):
-    # Verificar que sea admin
-    if not es_admin(request.user):
-        return redirect('home')
-    
-    socios = Socio.objects.all().prefetch_related('empresas')
-    context = {
-        'socios': socios,
-        'es_admin': True,
-    }
-    return render(request, 'applogin/lista_socios_admin.html', context)
-
-
-@login_required(login_url='applogin:iniciar')
-def detalle_socio_admin(request, socio_id):
-    # Verificar que sea admin
-    if not es_admin(request.user):
-        return redirect('home')
-    
-    try:
-        socio = Socio.objects.get(socio_id=socio_id)
-        empresas = socio.empresas.all()
-        context = {
-            'socio': socio,
-            'empresas': empresas,
-            'es_admin': True,
-        }
-        return render(request, 'applogin/detalle_socio_admin.html', context)
-    except Socio.DoesNotExist:
-        return redirect('applogin:lista_socios_admin')
