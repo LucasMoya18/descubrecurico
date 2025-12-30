@@ -7,10 +7,8 @@
   <title>{% block title %}Descubre Curicó{% endblock %}</title>
 
 
-  <!-- ✅ Tailwind CSS vía CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- ✅ Configuración global de colores y tema -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -29,10 +27,8 @@
     };
   </script>
 
-  <!-- ✅ Tus estilos personalizados -->
   <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2">
 
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <script>window.STATIC_URL = "{% static '' %}";</script>

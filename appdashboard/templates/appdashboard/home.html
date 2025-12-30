@@ -4,78 +4,168 @@
 {% block title %}Panel de Administración - Descubre Curicó{% endblock %}
 
 {% block content %}
-<section class="py-16 bg-white border-b border-gray-200">
-  <div class="container mx-auto px-6 lg:px-10">
-    <div class="mb-12 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-burgundy-reserve mb-2">Panel de Administración</h2>
-      <p class="text-gray-600">Bienvenido {{ user.username }}, visualiza el estado del gremio</p>
-    </div>
-
-    <!-- Admin Cards Grid -->
-    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-      
-      <!-- Card: Socios -->
-      <a href="{% url 'appdashboard:lista_socios' %}" class="group">
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-harvest-gold shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <h3 class="text-gray-700 text-sm font-semibold uppercase tracking-wide mb-2">Total de Socios</h3>
-              <p class="text-5xl font-bold text-harvest-gold">{{ total_socios }}</p>
-            </div>
-            <div class="p-4 bg-harvest-gold/10 rounded-xl group-hover:bg-harvest-gold/20 transition">
-              <i data-lucide="users" class="w-10 h-10 text-harvest-gold"></i>
-            </div>
-          </div>
-          <div class="pt-4 border-t border-harvest-gold/20">
-            <span class="text-gray-600 text-sm group-hover:text-harvest-gold transition font-semibold">Ver detalles →</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Card: Empresas -->
-      <a href="{% url 'appdashboard:lista_empresas_admin' %}" class="group">
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-harvest-gold shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <h3 class="text-gray-700 text-sm font-semibold uppercase tracking-wide mb-2">Total de Empresas</h3>
-              <p class="text-5xl font-bold text-harvest-gold">{{ total_empresas }}</p>
-            </div>
-            <div class="p-4 bg-harvest-gold/10 rounded-xl group-hover:bg-harvest-gold/20 transition">
-              <i data-lucide="briefcase" class="w-10 h-10 text-harvest-gold"></i>
-            </div>
-          </div>
-          <div class="pt-4 border-t border-harvest-gold/20">
-            <span class="text-gray-600 text-sm group-hover:text-harvest-gold transition font-semibold">Ver detalles →</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Card: Solicitudes -->
-      <a href="{% url 'appdashboard:lista_solicitudes' %}" class="group">
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-harvest-gold shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <h3 class="text-gray-700 text-sm font-semibold uppercase tracking-wide mb-2">Solicitudes Pendientes</h3>
-              <p class="text-5xl font-bold text-harvest-gold">{{ solicitudes_pendientes }}</p>
-            </div>
-            <div class="p-4 bg-harvest-gold/10 rounded-xl group-hover:bg-harvest-gold/20 transition">
-              <i data-lucide="clipboard-list" class="w-10 h-10 text-harvest-gold"></i>
-            </div>
-          </div>
-          <div class="pt-4 border-t border-harvest-gold/20">
-            <span class="text-gray-600 text-sm group-hover:text-harvest-gold transition font-semibold">Gestionar solicitudes →</span>
-          </div>
-        </div>
-      </a>
-
+<div class="flex flex-col md:flex-row min-h-screen bg-gray-50">
+  
+  <!-- Sidebar de Navegación -->
+  <aside class="w-full md:w-64 bg-white border-r border-gray-200 flex-shrink-0 md:min-h-screen">
+    <div class="p-6 border-b border-gray-100">
+      <h2 class="text-lg font-bold text-burgundy-reserve flex items-center gap-2">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> 
+        Administración
+      </h2>
+      <p class="text-xs text-gray-500 mt-1">Gremio Descubre Curicó</p>
     </div>
     
-    <div class="mt-12 text-center">
-        <a href="{% url 'home' %}" class="inline-flex items-center gap-2 px-6 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 transition">
-          <i data-lucide="arrow-left" class="h-4 w-4"></i>
-          Volver al Inicio
+    <nav class="p-4 space-y-2">
+      <a href="{% url 'appdashboard:home' %}" class="flex items-center gap-3 px-4 py-3 bg-burgundy-reserve text-white rounded-lg shadow-md transition-all">
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+        <span class="font-medium">Resumen General</span>
+      </a>
+      
+      <div class="pt-4 pb-2">
+        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Gestión</p>
+      </div>
+
+      <a href="{% url 'appdashboard:lista_socios' %}" class="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-100 hover:text-burgundy-reserve rounded-lg transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span>Socios</span>
+      </a>
+
+      <a href="{% url 'appdashboard:lista_empresas_admin' %}" class="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-100 hover:text-burgundy-reserve rounded-lg transition-colors">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span>Empresas</span>
+      </a>
+
+      <a href="{% url 'appdashboard:lista_solicitudes' %}" class="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-100 hover:text-burgundy-reserve rounded-lg transition-colors justify-between">
+        <div class="flex items-center gap-3">
+            <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+            <span>Solicitudes</span>
+        </div>
+        {% if solicitudes_pendientes > 0 %}
+        <span class="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">{{ solicitudes_pendientes }}</span>
+        {% endif %}
+      </a>
+
+      <a href="{% url 'appdashboard:lista_mensajes' %}" class="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-100 hover:text-burgundy-reserve rounded-lg transition-colors justify-between">
+        <div class="flex items-center gap-3">
+            <i data-lucide="mail" class="w-5 h-5"></i>
+            <span>Mensajes</span>
+        </div>
+        {% if mensajes_no_leidos > 0 %}
+        <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">{{ mensajes_no_leidos }}</span>
+        {% endif %}
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+    
+    <!-- Header del Dashboard -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Panel de Control</h1>
+        <p class="text-gray-500 text-sm">Bienvenido, {{ user.username }}. Aquí tienes un resumen de la actividad reciente.</p>
+      </div>
+      <div class="flex gap-3">
+        <a href="{% url 'appsocios:crear_socio' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition shadow-sm">
+            <i data-lucide="plus" class="w-4 h-4"></i> Nuevo Socio
         </a>
+        <a href="{% url 'appsocios:crear_empresa' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition shadow-sm">
+            <i data-lucide="plus" class="w-4 h-4"></i> Nueva Empresa
+        </a>
+
+ 
+      </div>
     </div>
-  </div>
-</section>
+
+    <!-- Tarjetas de Resumen (KPIs) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <!-- Card Socios -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500 uppercase">Total Socios</p>
+          <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_socios }}</p>
+        </div>
+        <div class="p-3 bg-blue-50 rounded-full text-blue-600">
+          <i data-lucide="users" class="w-8 h-8"></i>
+        </div>
+      </div>
+
+      <!-- Card Empresas -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500 uppercase">Empresas Registradas</p>
+          <p class="text-3xl font-bold text-gray-800 mt-1">{{ total_empresas }}</p>
+        </div>
+        <div class="p-3 bg-green-50 rounded-full text-green-600">
+          <i data-lucide="briefcase" class="w-8 h-8"></i>
+        </div>
+      </div>
+
+      <!-- Card Solicitudes -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500 uppercase">Solicitudes Pendientes</p>
+          <p class="text-3xl font-bold text-gray-800 mt-1">{{ solicitudes_pendientes }}</p>
+        </div>
+        <div class="p-3 bg-orange-50 rounded-full text-orange-600">
+          <i data-lucide="alert-circle" class="w-8 h-8"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secciones de Resumen Detallado -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Últimas Solicitudes -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <h3 class="font-bold text-gray-800">Solicitudes Recientes</h3>
+          <a href="{% url 'appdashboard:lista_solicitudes' %}" class="text-xs text-burgundy-reserve hover:underline font-semibold">Ver todas</a>
+        </div>
+        <div class="divide-y divide-gray-100">
+          {% for sol in solicitudes_recientes %}
+          <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition">
+            <div>
+              <p class="text-sm font-bold text-gray-800">{{ sol.nombre }}</p>
+              <p class="text-xs text-gray-500">{{ sol.fecha_creacion|date:"d M Y" }}</p>
+            </div>
+            <a href="{% url 'appdashboard:gestionar_solicitud' sol.id_empresa %}" class="text-xs bg-burgundy-reserve text-white px-3 py-1 rounded-full hover:bg-vine-green transition">Revisar</a>
+          </div>
+          {% empty %}
+          <div class="p-6 text-center text-gray-500 text-sm">No hay solicitudes pendientes.</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Últimas Empresas -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <h3 class="font-bold text-gray-800">Últimas Empresas Agregadas</h3>
+          <a href="{% url 'appdashboard:lista_empresas_admin' %}" class="text-xs text-burgundy-reserve hover:underline font-semibold">Ver todas</a>
+        </div>
+        <div class="divide-y divide-gray-100">
+          {% for emp in ultimas_empresas %}
+          <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-500">
+                    <i data-lucide="building" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-gray-800">{{ emp.nombre }}</p>
+                    <p class="text-xs text-gray-500">{{ emp.rubro.nombre_rubro|default:"Sin rubro" }}</p>
+                </div>
+            </div>
+            <span class="text-xs text-gray-400">{{ emp.fecha_creacion|date:"d/m/Y" }}</span>
+          </div>
+          {% empty %}
+          <div class="p-6 text-center text-gray-500 text-sm">No hay empresas registradas.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
 {% endblock %}

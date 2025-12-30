@@ -1,17 +1,29 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.contrib import messages
 from applogin.utils import es_admin, es_socio
 from applogin.decorators import solo_admin, solo_socio
 from appsocios.models import Socio, Empresa
+from .models import MensajeContacto
 
 @solo_socio
 def home(request):
     if es_admin(request.user):
+        # Datos para el Dashboard Admin
+        ultimos_socios = Socio.objects.order_by('-socio_id')[:5]
+        ultimas_empresas = Empresa.objects.select_related('rubro').order_by('-fecha_creacion')[:5]
+        solicitudes_recientes = Empresa.objects.filter(estado_solicitud='pendiente').order_by('fecha_creacion')[:5]
+        mensajes_no_leidos = MensajeContacto.objects.filter(leido=False).count()
+
         context = {
             'total_socios': Socio.objects.count(),
             'total_empresas': Empresa.objects.count(),
             'solicitudes_pendientes': Empresa.objects.filter(estado_solicitud='pendiente').count(),
+            'mensajes_no_leidos': mensajes_no_leidos,
+            'ultimos_socios': ultimos_socios,
+            'ultimas_empresas': ultimas_empresas,
+            'solicitudes_recientes': solicitudes_recientes,
             'es_admin': True,
         }
         return render(request, 'appdashboard/home.html', context)
@@ -128,3 +140,49 @@ def eliminar_empresa_admin(request, empresa_id):
         return redirect('appdashboard:lista_empresas_admin')
         
     return render(request, 'appdashboard/confirmar_eliminar_empresa.html', {'empresa': empresa})
+
+# --- Vistas de Contacto y Mensajería ---
+
+def contacto(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        email = request.POST.get('email')
+        telefono = request.POST.get('telefono')
+        mensaje_texto = request.POST.get('mensaje')
+        
+        MensajeContacto.objects.create(
+            nombre=nombre,
+            email=email,
+            telefono=telefono,
+            mensaje=mensaje_texto
+        )
+        messages.success(request, '¡Mensaje enviado! Nos pondremos en contacto contigo a la brevedad.')
+        return redirect('contacto')
+        
+    return render(request, 'contacto.html')
+
+@solo_admin
+def lista_mensajes(request):
+    mensajes = MensajeContacto.objects.all()
+    mensajes_no_leidos = MensajeContacto.objects.filter(leido=False).count()
+    return render(request, 'appdashboard/lista_mensajes.html', {
+        'mensajes': mensajes, 
+        'mensajes_no_leidos': mensajes_no_leidos
+    })
+
+@solo_admin
+def detalle_mensaje(request, mensaje_id):
+    mensaje = get_object_or_404(MensajeContacto, id=mensaje_id)
+    if not mensaje.leido:
+        mensaje.leido = True
+        mensaje.save()
+    return render(request, 'appdashboard/detalle_mensaje.html', {'mensaje': mensaje})
+
+@solo_admin
+def marcar_mensaje_leido(request, mensaje_id):
+    if request.method == 'POST':
+        mensaje = get_object_or_404(MensajeContacto, id=mensaje_id)
+        mensaje.leido = not mensaje.leido
+        mensaje.save()
+        return JsonResponse({'leido': mensaje.leido})
+    return JsonResponse({'error': 'Método no permitido'}, status=405)

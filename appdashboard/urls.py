@@ -11,4 +11,8 @@ urlpatterns = [
     path('solicitudes/<int:empresa_id>/', views.gestionar_solicitud, name='gestionar_solicitud'),
     path('empresas/', views.lista_empresas_admin, name='lista_empresas_admin'),
     path('empresas/eliminar/<int:empresa_id>/', views.eliminar_empresa_admin, name='eliminar_empresa_admin'),
+    path('mensajes/', views.lista_mensajes, name='lista_mensajes'),
+    path('mensajes/<int:mensaje_id>/', views.detalle_mensaje, name='detalle_mensaje'),
+    path('mensajes/marcar/<int:mensaje_id>/', views.marcar_mensaje_leido, name='marcar_mensaje_leido'),
+    path('contacto/enviar/', views.contacto, name='enviar_contacto'),
 ]
